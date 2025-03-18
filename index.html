@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glass Jar Quote Comparison</title>
+    <title>Price Comparison</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,151 +15,210 @@
             background-color: #f9f9f9;
         }
         
-        h1, h2 {
-            color: #2c3e50;
-        }
-        
         h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #3498db;
+            color: #000;
+            margin-bottom: 20px;
             padding-bottom: 10px;
-        }
-        
-        .section {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .data-input {
-            background-color: #ecf0f1;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .filter-controls {
-            background-color: #ecf0f1;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: none;
-        }
-        
-        .filter-group {
-            display: inline-block;
-            margin-right: 25px;
-            margin-bottom: 10px;
-        }
-        
-        label {
+            font-size: 24px;
             font-weight: bold;
-            margin-right: 10px;
         }
         
-        select, button, input[type="file"] {
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #bdc3c7;
+        .main-container {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: auto;
+        }
+        
+        .button-container {
+            margin: 20px 0;
         }
         
         button {
             background-color: #3498db;
             color: white;
             border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-right: 10px;
             padding: 8px 15px;
-        }
-        
-        .primary-btn {
-            background-color: #2ecc71;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 14px;
         }
         
         button:hover {
             background-color: #2980b9;
         }
         
+        .primary-btn {
+            background-color: #2ecc71;
+        }
+        
         .primary-btn:hover {
             background-color: #27ae60;
         }
         
-        .table-container {
-            overflow-x: auto;
-            margin-bottom: 30px;
+        .export-btn {
+            background-color: #e67e22;
         }
         
-        table {
+        .export-btn:hover {
+            background-color: #d35400;
+        }
+        
+        .price-table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 14px;
         }
         
-        th {
+        .price-table th, .price-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .price-table th {
+            position: sticky;
+            top: 0;
+            font-weight: bold;
+        }
+        
+        .price-table tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        
+        .price-table td:nth-child(2) {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        .price-table th:nth-child(1), .price-table td:nth-child(1) {
+            width: 50px;
+            max-width: 50px;
+        }
+        
+        .price-table th:nth-child(2), .price-table td:nth-child(2) {
+            width: 120px;
+            max-width: 120px;
+        }
+        
+        .price-table th:nth-child(3), .price-table td:nth-child(3) {
+            width: 250px;
+            max-width: 250px;
+            text-align: left;
+        }
+        
+        .price-table th:nth-child(4), .price-table td:nth-child(4) {
+            width: 150px;
+            max-width: 150px;
+            text-align: left;
+        }
+        
+        .price-table th:nth-child(5), .price-table td:nth-child(5) {
+            width: 120px;
+            max-width: 120px;
+        }
+        
+        .price-table td:nth-child(3) {
+            color: #333;
+        }
+        
+        .price-table th:nth-child(1) {
+            background-color: #fff;
+        }
+        
+        .price-table th:nth-child(2) {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        .price-table th:nth-child(3) {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .price-table th:nth-child(4) {
             background-color: #3498db;
             color: white;
-            padding: 12px;
-            text-align: left;
-            cursor: pointer;
-            position: relative;
         }
         
-        th:hover {
-            background-color: #2980b9;
+        .price-table th:nth-child(5) {
+            background-color: #f1c40f;
+            color: white;
         }
         
-        th::after {
-            content: "↕";
-            position: absolute;
-            right: 8px;
-            opacity: 0.5;
+        /* Vendor column colors - we'll use a repeating pattern for many vendors */
+        .price-table th.vendor-col {
+            color: white;
         }
         
-        th.asc::after {
-            content: "↑";
-            opacity: 1;
+        .price-table th.vendor-col:nth-of-type(6n) {
+            background-color: #2ecc71;
         }
         
-        th.desc::after {
-            content: "↓";
-            opacity: 1;
+        .price-table th.vendor-col:nth-of-type(6n+1) {
+            background-color: #9b59b6;
         }
         
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+        .price-table th.vendor-col:nth-of-type(6n+2) {
+            background-color: #95a5a6;
         }
         
-        tr:hover {
-            background-color: #f5f5f5;
+        .price-table th.vendor-col:nth-of-type(6n+3) {
+            background-color: #e67e22;
         }
         
-        .highlight {
-            background-color: #e5f7fd;
+        .price-table th.vendor-col:nth-of-type(6n+4) {
+            background-color: #1abc9c;
         }
         
-        .best-value {
-            background-color: #e8f8f5;
-            border-left: 4px solid #27ae60;
+        .price-table th.vendor-col:nth-of-type(6n+5) {
+            background-color: #34495e;
         }
         
-        textarea {
+        /* Highlighted text */
+        .highlight-red {
+            color: red;
+            font-weight: bold;
+        }
+        
+        .highlight-normal {
+            font-weight: bold;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
             width: 100%;
-            height: 150px;
-            padding: 10px;
-            border: 1px solid #bdc3c7;
-            border-radius: 4px;
-            font-family: monospace;
-            margin-bottom: 10px;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
         }
         
-        .tab-container {
-            margin-bottom: 20px;
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 5px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
         }
         
         .tab {
@@ -173,7 +232,6 @@
             background-color: inherit;
             float: left;
             border: none;
-            border-radius: 0;
             outline: none;
             cursor: pointer;
             padding: 14px 16px;
@@ -181,6 +239,7 @@
             font-size: 16px;
             color: #333;
             margin: 0;
+            border-radius: 0;
         }
         
         .tab button:hover {
@@ -201,923 +260,885 @@
             background-color: white;
         }
         
-        .helper-text {
-            color: #7f8c8d;
-            font-size: 0.9em;
-            margin-top: 5px;
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-bottom: 10px;
         }
         
-        .sample-data {
-            font-size: 0.8em;
-            color: #7f8c8d;
-            cursor: pointer;
-            text-decoration: underline;
-            margin-top: 5px;
-            display: inline-block;
+        .input-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
         }
         
-        .hidden {
-            display: none;
+        .input-table th, .input-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
         }
         
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 0.9em;
-            color: #7f8c8d;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+        .input-table th {
+            background-color: #f2f2f2;
         }
         
-        .export-section {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+        .input-table input[type="text"], 
+        .input-table input[type="number"] {
+            width: 95%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .vendor-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .vendor-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .vendor-item input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        
+        .vendor-item button {
+            background-color: #e74c3c;
+            padding: 5px 10px;
+            margin: 0;
+        }
+        
+        #imagePreview {
+            max-width: 100px;
+            max-height: 100px;
+            margin-top: 10px;
+        }
+        
+        /* Dynamic vendor input fields in add row modal */
+        #vendorInputs {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        /* Responsive behavior */
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            
+            .button-container, .add-row-btn, .export-section {
+                display: none;
+            }
+            
+            .main-container {
+                box-shadow: none;
+            }
+            
+            .price-table {
+                font-size: 12px;
+            }
         }
         
         @media (max-width: 768px) {
-            .filter-group {
-                display: block;
-                margin-bottom: 15px;
+            .price-table {
+                font-size: 12px;
             }
             
-            .tab button {
-                float: none;
-                display: block;
-                width: 100%;
-                text-align: left;
+            .price-table th, .price-table td {
+                padding: 5px;
             }
-        }
-        
-        input[type="checkbox"] {
-            margin-right: 8px;
-        }
-        
-        .checkbox-label {
-            display: inline-flex;
-            align-items: center;
-            margin-right: 15px;
+            
+            .button-container button {
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Glass Jar Quote Comparison</h1>
-    
-    <div class="section">
-        <h2>Load Your Quote Data</h2>
-        <p>Choose how to load your glass jar quotes:</p>
+    <div class="main-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid #ddd;">
+            <h1>Price Comparison</h1>
+            <div style="text-align: right; font-weight: bold; font-size: 18px;">Vendor</div>
+        </div>
         
-        <div class="tab-container">
-            <div class="tab">
-                <button class="tablinks active" onclick="openTab(event, 'file-upload')">Upload CSV File</button>
-                <button class="tablinks" onclick="openTab(event, 'manual-entry')">Enter Data Manually</button>
-                <button class="tablinks" onclick="openTab(event, 'paste-data')">Paste Data</button>
+        <div class="table-container">
+            <table id="priceTable" class="price-table">
+                <thead>
+                    <tr id="headerRow">
+                        <th>No.</th>
+                        <th>Image</th>
+                        <th>Product</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <!-- Vendor columns will be added dynamically -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Table rows will be added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="button-container">
+        <button id="addRowBtn" class="add-row-btn">Add Row</button>
+        <button id="addAmountBtn">Add Amount Row</button>
+        <button id="manageVendorsBtn">Manage Vendors</button>
+        <button id="exportCSVBtn" class="export-btn">Export to CSV</button>
+        <button id="saveDataBtn" class="primary-btn">Save Data</button>
+        <button id="printBtn">Print Table</button>
+    </div>
+    
+    <!-- Add Row Modal -->
+    <div id="addRowModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeAddRowModal">&times;</span>
+            <h2>Add New Row</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="productInput" style="font-weight: bold;">Product:</label><br>
+                <textarea id="productInput" placeholder="e.g. Glass Jar - Plastic White/Black Lid&#10;Child's Lock Lid&#10;5.9cmx6.4cm to 6.2x6.7cm (Volcanee)&#10;5cmx6cm (Archibald)"></textarea>
+                
+                <div style="display: flex; gap: 15px; margin-top: 15px;">
+                    <div style="flex: 1;">
+                        <label for="descriptionInput" style="font-weight: bold;">Description:</label><br>
+                        <input type="text" id="descriptionInput" style="width: 100%; padding: 8px;" placeholder="e.g. With Sticker">
+                    </div>
+                    <div>
+                        <label for="imageInput" style="font-weight: bold;">Image (optional):</label><br>
+                        <input type="file" id="imageInput" accept="image/*">
+                        <div id="imagePreview"></div>
+                    </div>
+                </div>
             </div>
             
-            <div id="file-upload" class="tabcontent" style="display: block;">
-                <p>Upload a CSV file with your jar quotes:</p>
-                <input type="file" id="csv-file" accept=".csv">
-                <p class="helper-text">Your CSV should include columns for: Has Sticker, Size (oz), Price, MOQ (Minimum Order Quantity), and Supplier</p>
-                <a href="#" class="sample-data" onclick="downloadSampleCSV()">Download Sample CSV Template</a>
-                <div class="button-container" style="margin-top: 15px;">
-                    <button onclick="loadCSV()" class="primary-btn">Load Data from CSV</button>
+            <div>
+                <label for="amountInput" style="font-weight: bold;">Amount:</label><br>
+                <input type="text" id="amountInput" style="width: 200px; padding: 8px; margin-bottom: 15px;" placeholder="e.g. 5,000.00">
+            </div>
+            
+            <div>
+                <h3>Vendor Prices</h3>
+                <div id="vendorInputs">
+                    <!-- Vendor input fields will be added here dynamically -->
                 </div>
             </div>
             
-            <div id="manual-entry" class="tabcontent">
-                <p>Enter your quote data into the table below:</p>
-                <div class="table-container">
-                    <table id="data-entry-table">
-                        <thead>
-                            <tr>
-                                <th>Has Sticker</th>
-                                <th>Size (oz)</th>
-                                <th>Price ($)</th>
-                                <th>MOQ</th>
-                                <th>Supplier</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><input type="checkbox" class="has-sticker"></td>
-                                <td><input type="number" step="0.1" class="jar-size" placeholder="e.g. 8"></td>
-                                <td><input type="number" step="0.01" class="price" placeholder="e.g. 1.10"></td>
-                                <td><input type="number" class="moq" placeholder="e.g. 1000"></td>
-                                <td><input type="text" class="supplier" placeholder="e.g. Supplier A"></td>
-                                <td><button onclick="removeRow(this)">Remove</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="button-container" style="margin-top: 15px;">
-                    <button onclick="addRow()">Add Row</button>
-                    <button onclick="loadManualData()" class="primary-btn">Load Data</button>
-                </div>
-                <a href="#" class="sample-data" onclick="loadSampleData()">Load Sample Data</a>
-            </div>
-            
-            <div id="paste-data" class="tabcontent">
-                <p>Paste your data in CSV or JSON format:</p>
-                <textarea id="paste-area" placeholder="Paste your data here in CSV format (with headers) or JSON format"></textarea>
-                <div class="button-container">
-                    <button onclick="detectAndLoadPastedData()" class="primary-btn">Parse and Load Data</button>
-                </div>
-                <p class="helper-text">CSV Format Example: Has Sticker,Size,Price,MOQ,Supplier<br>Yes,8,1.10,1000,Supplier A</p>
-                <a href="#" class="sample-data" onclick="loadSamplePasteData()">Load Sample Data Format</a>
+            <div style="text-align: right; margin-top: 20px;">
+                <button id="cancelAddRowBtn">Cancel</button>
+                <button id="confirmAddRowBtn" class="primary-btn">Add Row</button>
             </div>
         </div>
     </div>
     
-    <div id="comparison-section" class="hidden">
-        <div class="filter-controls">
-            <div class="filter-group">
-                <label>Sticker:</label>
-                <label class="checkbox-label">
-                    <input type="checkbox" id="with-sticker" checked> With
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" id="without-sticker" checked> Without
-                </label>
-            </div>
+    <!-- Add Amount Row Modal -->
+    <div id="addAmountModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeAmountModal">&times;</span>
+            <h2>Add Amount Row</h2>
             
-            <div class="filter-group">
-                <label for="jar-size">Size:</label>
-                <select id="jar-size">
-                    <option value="all">All Sizes</option>
+            <p>Add a new amount (quantity) row to an existing product.</p>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="productSelect" style="font-weight: bold;">Select Product:</label><br>
+                <select id="productSelect" style="width: 100%; padding: 8px; margin-top: 5px;">
+                    <!-- Products will be added here -->
                 </select>
             </div>
             
-            <div class="filter-group">
-                <label for="supplier">Supplier:</label>
-                <select id="supplier">
-                    <option value="all">All Suppliers</option>
-                </select>
+            <div>
+                <label for="newAmountInput" style="font-weight: bold;">Amount:</label><br>
+                <input type="text" id="newAmountInput" style="width: 200px; padding: 8px; margin-bottom: 15px;" placeholder="e.g. 10,000.00">
             </div>
             
-            <button id="highlight-best-value">Highlight Best Value</button>
-            <button id="reset-filters">Reset Filters</button>
-        </div>
-        
-        <div class="section">
-            <h2>Quote Comparison Table</h2>
-            <div class="table-container">
-                <table id="jar-table">
-                    <thead>
-                        <tr>
-                            <th data-sort="has-sticker">Has Sticker</th>
-                            <th data-sort="size">Size (oz)</th>
-                            <th data-sort="price">Price ($)</th>
-                            <th data-sort="moq">MOQ</th>
-                            <th data-sort="supplier">Supplier</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data will be loaded here -->
-                    </tbody>
-                </table>
+            <div>
+                <h3>Vendor Prices</h3>
+                <div id="newVendorInputs">
+                    <!-- Vendor input fields will be added here dynamically -->
+                </div>
             </div>
             
-            <div class="export-section">
-                <button onclick="exportToCSV()">Export to CSV</button>
-                <button onclick="printTable()">Print Table</button>
-                <button onclick="saveDataLocally()">Save Data for Later</button>
-            </div>
-        </div>
-        
-        <div class="section">
-            <h2>Cost Analysis</h2>
-            <div id="cost-analysis">
-                <!-- Analysis will be generated here -->
+            <div style="text-align: right; margin-top: 20px;">
+                <button id="cancelAmountBtn">Cancel</button>
+                <button id="confirmAmountBtn" class="primary-btn">Add Amount Row</button>
             </div>
         </div>
     </div>
     
-    <footer>
-        <p>Glass Jar Quote Comparison Tool - For internal use only</p>
-        <p>Data is stored locally in your browser and is not sent to any server</p>
-    </footer>
-
+    <!-- Manage Vendors Modal -->
+    <div id="manageVendorsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeVendorsModal">&times;</span>
+            <h2>Manage Vendors</h2>
+            
+            <div style="margin-bottom: 15px;">
+                <button id="addVendorBtn" class="primary-btn">Add New Vendor</button>
+            </div>
+            
+            <div class="vendor-container" id="vendorList">
+                <!-- Vendor items will be added here -->
+            </div>
+            
+            <div style="text-align: right; margin-top: 20px;">
+                <button id="cancelVendorsBtn">Cancel</button>
+                <button id="confirmVendorsBtn" class="primary-btn">Update Vendors</button>
+            </div>
+        </div>
+    </div>
+    
     <script>
-        // Data storage
-        let jarData = [];
+        // Data structure
+        let tableData = [];
+        let vendorNames = [];
+        let imageCache = {};
+        let rowCounter = 1;
         
-        // Tab functionality
-        function openTab(evt, tabName) {
-            const tabcontent = document.getElementsByClassName("tabcontent");
-            for (let i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
+        // DOM elements
+        const priceTable = document.getElementById('priceTable');
+        const headerRow = document.getElementById('headerRow');
+        const addRowBtn = document.getElementById('addRowBtn');
+        const addAmountBtn = document.getElementById('addAmountBtn');
+        const manageVendorsBtn = document.getElementById('manageVendorsBtn');
+        const exportCSVBtn = document.getElementById('exportCSVBtn');
+        const saveDataBtn = document.getElementById('saveDataBtn');
+        const printBtn = document.getElementById('printBtn');
+        
+        // Modal elements
+        const addRowModal = document.getElementById('addRowModal');
+        const closeAddRowModal = document.getElementById('closeAddRowModal');
+        const cancelAddRowBtn = document.getElementById('cancelAddRowBtn');
+        const confirmAddRowBtn = document.getElementById('confirmAddRowBtn');
+        
+        const addAmountModal = document.getElementById('addAmountModal');
+        const closeAmountModal = document.getElementById('closeAmountModal');
+        const cancelAmountBtn = document.getElementById('cancelAmountBtn');
+        const confirmAmountBtn = document.getElementById('confirmAmountBtn');
+        
+        const manageVendorsModal = document.getElementById('manageVendorsModal');
+        const closeVendorsModal = document.getElementById('closeVendorsModal');
+        const cancelVendorsBtn = document.getElementById('cancelVendorsBtn');
+        const confirmVendorsBtn = document.getElementById('confirmVendorsBtn');
+        const addVendorBtn = document.getElementById('addVendorBtn');
+        const vendorList = document.getElementById('vendorList');
+        
+        // Modal inputs
+        const productInput = document.getElementById('productInput');
+        const descriptionInput = document.getElementById('descriptionInput');
+        const imageInput = document.getElementById('imageInput');
+        const amountInput = document.getElementById('amountInput');
+        const vendorInputs = document.getElementById('vendorInputs');
+        
+        const productSelect = document.getElementById('productSelect');
+        const newAmountInput = document.getElementById('newAmountInput');
+        const newVendorInputs = document.getElementById('newVendorInputs');
+        
+        // Event listeners
+        addRowBtn.addEventListener('click', openAddRowModal);
+        closeAddRowModal.addEventListener('click', closeModal);
+        cancelAddRowBtn.addEventListener('click', closeModal);
+        confirmAddRowBtn.addEventListener('click', addRow);
+        
+        addAmountBtn.addEventListener('click', openAddAmountModal);
+        closeAmountModal.addEventListener('click', closeModal);
+        cancelAmountBtn.addEventListener('click', closeModal);
+        confirmAmountBtn.addEventListener('click', addAmountRow);
+        
+        manageVendorsBtn.addEventListener('click', openManageVendorsModal);
+        closeVendorsModal.addEventListener('click', closeModal);
+        cancelVendorsBtn.addEventListener('click', closeModal);
+        confirmVendorsBtn.addEventListener('click', updateVendors);
+        addVendorBtn.addEventListener('click', addVendor);
+        
+        exportCSVBtn.addEventListener('click', exportToCSV);
+        saveDataBtn.addEventListener('click', saveData);
+        printBtn.addEventListener('click', printTable);
+        
+        imageInput.addEventListener('change', previewImage);
+        
+        // Initialize from localStorage if available
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSavedData();
+        });
+        
+        // Functions
+        function openAddRowModal() {
+            addRowModal.style.display = 'block';
+            // Clear previous inputs
+            productInput.value = '';
+            descriptionInput.value = '';
+            imageInput.value = '';
+            amountInput.value = '';
+            document.getElementById('imagePreview').innerHTML = '';
             
-            const tablinks = document.getElementsByClassName("tablinks");
-            for (let i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-            
-            document.getElementById(tabName).style.display = "block";
-            evt.currentTarget.className += " active";
+            // Populate vendor input fields
+            populateVendorInputs(vendorInputs);
         }
         
-        // CSV File handling
-        function loadCSV() {
-            const fileInput = document.getElementById('csv-file');
-            if (!fileInput.files.length) {
-                alert('Please select a CSV file to upload.');
+        function populateVendorInputs(container) {
+            container.innerHTML = '';
+            
+            if (vendorNames.length === 0) {
+                container.innerHTML = '<p>No vendors added yet. Please add vendors first.</p>';
                 return;
             }
             
-            const file = fileInput.files[0];
-            const reader = new FileReader();
+            vendorNames.forEach((vendor, index) => {
+                const div = document.createElement('div');
+                div.style.marginBottom = '10px';
+                
+                const label = document.createElement('label');
+                label.textContent = vendor + ':';
+                label.style.display = 'block';
+                label.style.marginBottom = '5px';
+                div.appendChild(label);
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.classList.add('vendor-price-input');
+                input.dataset.index = index;
+                input.placeholder = '-';
+                input.style.width = '100%';
+                input.style.padding = '8px';
+                input.style.boxSizing = 'border-box';
+                div.appendChild(input);
+                
+                container.appendChild(div);
+            });
+        }
+        
+        function openAddAmountModal() {
+            // Populate product dropdown
+            populateProductDropdown();
             
-            reader.onload = function(e) {
-                const content = e.target.result;
-                try {
-                    jarData = parseCSV(content);
-                    renderTable();
-                    showComparisonSection();
-                } catch (error) {
-                    alert('Error parsing CSV: ' + error.message);
+            if (productSelect.options.length === 0) {
+                alert('No products available. Please add a product first.');
+                return;
+            }
+            
+            addAmountModal.style.display = 'block';
+            
+            // Clear previous inputs
+            newAmountInput.value = '';
+            
+            // Populate vendor input fields
+            populateVendorInputs(newVendorInputs);
+        }
+        
+        function populateProductDropdown() {
+            productSelect.innerHTML = '';
+            
+            // Create a Set to track unique products
+            const uniqueProducts = new Set();
+            
+            // Group rows by product and description
+            tableData.forEach(row => {
+                const key = `${row.product}|${row.description}`;
+                uniqueProducts.add(key);
+            });
+            
+            // Convert the Set to an array and create options
+            Array.from(uniqueProducts).forEach(key => {
+                const [product, description] = key.split('|');
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = `${product} - ${description}`;
+                productSelect.appendChild(option);
+            });
+        }
+        
+        function openManageVendorsModal() {
+            manageVendorsModal.style.display = 'block';
+            
+            // Populate current vendor list
+            renderVendorList();
+        }
+        
+        function renderVendorList() {
+            vendorList.innerHTML = '';
+            
+            vendorNames.forEach((vendor, index) => {
+                const vendorItem = document.createElement('div');
+                vendorItem.className = 'vendor-item';
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = vendor;
+                input.dataset.index = index;
+                input.className = 'vendor-name-input';
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = 'Remove';
+                removeBtn.addEventListener('click', () => removeVendor(index));
+                
+                vendorItem.appendChild(input);
+                vendorItem.appendChild(removeBtn);
+                vendorList.appendChild(vendorItem);
+            });
+            
+            if (vendorNames.length === 0) {
+                vendorList.innerHTML = '<p>No vendors added yet. Click "Add New Vendor" to add some.</p>';
+            }
+        }
+        
+        function addVendor() {
+            const newVendorName = "Vendor " + (vendorNames.length + 1);
+            
+            const vendorItem = document.createElement('div');
+            vendorItem.className = 'vendor-item';
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = newVendorName;
+            input.dataset.index = vendorNames.length;
+            input.className = 'vendor-name-input';
+            input.focus();
+            input.select();
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = 'Remove';
+            removeBtn.addEventListener('click', () => {
+                vendorList.removeChild(vendorItem);
+            });
+            
+            vendorItem.appendChild(input);
+            vendorItem.appendChild(removeBtn);
+            vendorList.appendChild(vendorItem);
+            
+            // Remove placeholder text if present
+            const placeholder = vendorList.querySelector('p');
+            if (placeholder) {
+                vendorList.removeChild(placeholder);
+            }
+        }
+        
+        function removeVendor(index) {
+            // We don't immediately remove from vendorNames array
+            // This will be done when the user confirms the changes
+            // Just remove from the DOM for now
+            const vendorItems = vendorList.querySelectorAll('.vendor-item');
+            if (index < vendorItems.length) {
+                vendorList.removeChild(vendorItems[index]);
+            }
+            
+            // Update data-index attributes for remaining vendors
+            const remainingInputs = vendorList.querySelectorAll('.vendor-name-input');
+            remainingInputs.forEach((input, i) => {
+                input.dataset.index = i;
+            });
+        }
+        
+        function closeModal() {
+            addRowModal.style.display = 'none';
+            addAmountModal.style.display = 'none';
+            manageVendorsModal.style.display = 'none';
+        }
+        
+        function previewImage(event) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.maxWidth = '100px';
+                    img.style.maxHeight = '100px';
+                    preview.appendChild(img);
                 }
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function formatProductText(text) {
+            if (!text) return '';
+            
+            // Find and highlight in red: "White/Black"
+            text = text.replace(/(White\/Black)/g, '<span class="highlight-red">$1</span>');
+            
+            // Process the text for newlines
+            return text.split('\n').map(line => {
+                // Check if this line contains dimensions (numbers followed by "cm")
+                if (/\d+(\.\d+)?cm/.test(line)) {
+                    // Process dimension lines
+                    return line;
+                } else {
+                    // For non-dimension lines, check for specific highlights
+                    if (line.includes('Child\'s Lock Lid')) {
+                        return line;
+                    } else {
+                        return line;
+                    }
+                }
+            }).join('<br>');
+        }
+        
+        function addRow() {
+            // Get values from inputs
+            const product = productInput.value.trim();
+            const description = descriptionInput.value.trim();
+            const amount = amountInput.value.trim();
+            
+            // Validate required fields
+            if (!product || !amount) {
+                alert('Product and Amount are required fields');
+                return;
+            }
+            
+            // Get values from vendor inputs (or '-' if empty)
+            const vendorInputEls = vendorInputs.querySelectorAll('.vendor-price-input');
+            const vendorValues = Array.from(vendorInputEls).map(input => input.value.trim() || '-');
+            
+            // Get image if provided
+            if (imageInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageId = `img_${Date.now()}`;
+                    imageCache[imageId] = e.target.result;
+                    
+                    // Add row to data structure
+                    const newRow = {
+                        id: Date.now(),
+                        no: rowCounter++,
+                        image: imageId,
+                        product: product,
+                        description: description,
+                        amount: amount,
+                        vendorValues: vendorValues
+                    };
+                    
+                    tableData.push(newRow);
+                    renderTable();
+                    closeModal();
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                // Add row without image
+                const newRow = {
+                    id: Date.now(),
+                    no: rowCounter++,
+                    image: null,
+                    product: product,
+                    description: description,
+                    amount: amount,
+                    vendorValues: vendorValues
+                };
+                
+                tableData.push(newRow);
+                renderTable();
+                closeModal();
+            }
+        }
+        
+        function addAmountRow() {
+            if (productSelect.options.length === 0) {
+                alert('No products available to add amount row');
+                return;
+            }
+            
+            const selectedOption = productSelect.value;
+            const [product, description] = selectedOption.split('|');
+            const newAmount = newAmountInput.value.trim();
+            
+            // Validate
+            if (!newAmount) {
+                alert('Amount is required');
+                return;
+            }
+            
+            // Get values from vendor inputs (or '-' if empty)
+            const vendorInputEls = newVendorInputs.querySelectorAll('.vendor-price-input');
+            const vendorValues = Array.from(vendorInputEls).map(input => input.value.trim() || '-');
+            
+            // Get the image from an existing row with the same product, if any
+            let imageId = null;
+            for (const row of tableData) {
+                if (row.product === product && row.description === description && row.image) {
+                    imageId = row.image;
+                    break;
+                }
+            }
+            
+            // Add new row
+            const newRow = {
+                id: Date.now(),
+                no: rowCounter++,
+                image: imageId,
+                product: product,
+                description: description,
+                amount: newAmount,
+                vendorValues: vendorValues.length > 0 ? vendorValues : new Array(vendorNames.length).fill('-')
             };
             
-            reader.readAsText(file);
-        }
-        
-        function parseCSV(csv) {
-            const lines = csv.split('\n');
-            const result = [];
-            const headers = lines[0].split(',').map(header => header.trim());
-            
-            for (let i = 1; i < lines.length; i++) {
-                if (!lines[i].trim()) continue;
-                
-                const values = lines[i].split(',');
-                const row = {};
-                
-                for (let j = 0; j < headers.length; j++) {
-                    let value = values[j] ? values[j].trim() : '';
-                    
-                    const key = headers[j].replace(/ /g, '').toLowerCase();
-                    
-                    // Handle special cases
-                    if (key === 'hassticker') {
-                        row[key] = value.toLowerCase() === 'yes' || value === '1' || value.toLowerCase() === 'true';
-                    }
-                    else if (['size', 'price', 'moq'].includes(key)) {
-                        row[key] = parseFloat(value) || 0;
-                    }
-                    else {
-                        row[key] = value;
-                    }
-                }
-                
-                result.push(row);
-            }
-            
-            return result;
-        }
-        
-        // Manual data entry
-        function addRow() {
-            const tbody = document.querySelector('#data-entry-table tbody');
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td><input type="checkbox" class="has-sticker"></td>
-                <td><input type="number" step="0.1" class="jar-size" placeholder="e.g. 8"></td>
-                <td><input type="number" step="0.01" class="price" placeholder="e.g. 1.10"></td>
-                <td><input type="number" class="moq" placeholder="e.g. 1000"></td>
-                <td><input type="text" class="supplier" placeholder="e.g. Supplier A"></td>
-                <td><button onclick="removeRow(this)">Remove</button></td>
-            `;
-            tbody.appendChild(newRow);
-        }
-        
-        function removeRow(button) {
-            const row = button.parentNode.parentNode;
-            row.parentNode.removeChild(row);
-        }
-        
-        function loadManualData() {
-            const rows = document.querySelectorAll('#data-entry-table tbody tr');
-            jarData = [];
-            
-            rows.forEach(row => {
-                const hasSticker = row.querySelector('.has-sticker').checked;
-                const size = parseFloat(row.querySelector('.jar-size').value);
-                const price = parseFloat(row.querySelector('.price').value);
-                const moq = parseFloat(row.querySelector('.moq').value);
-                const supplier = row.querySelector('.supplier').value.trim();
-                
-                if (!isNaN(size) && !isNaN(price)) {
-                    jarData.push({
-                        hassticker: hasSticker,
-                        size: size,
-                        price: price,
-                        moq: moq || 0,
-                        supplier: supplier
-                    });
-                }
-            });
-            
-            if (jarData.length === 0) {
-                alert('Please enter at least one valid row of data.');
-                return;
-            }
-            
+            tableData.push(newRow);
             renderTable();
-            showComparisonSection();
+            closeModal();
         }
         
-        function loadSampleData() {
-            document.querySelector('#data-entry-table tbody').innerHTML = '';
+        function updateVendors() {
+            // Get all vendor name inputs
+            const vendorNameInputs = vendorList.querySelectorAll('.vendor-name-input');
             
-            const sampleData = [
-                {hassticker: true, size: 4, price: 0.85, moq: 1000, supplier: 'Supplier A'},
-                {hassticker: false, size: 4, price: 0.70, moq: 1000, supplier: 'Supplier A'},
-                {hassticker: true, size: 8, price: 1.10, moq: 1500, supplier: 'Supplier A'},
-                {hassticker: false, size: 8, price: 0.95, moq: 1500, supplier: 'Supplier A'},
-                {hassticker: true, size: 16, price: 1.45, moq: 2000, supplier: 'Supplier A'},
-                {hassticker: false, size: 16, price: 1.30, moq: 2000, supplier: 'Supplier A'},
-                {hassticker: true, size: 4, price: 0.82, moq: 2000, supplier: 'Supplier B'},
-                {hassticker: false, size: 4, price: 0.66, moq: 2000, supplier: 'Supplier B'},
-                {hassticker: true, size: 8, price: 1.05, moq: 1000, supplier: 'Supplier B'},
-                {hassticker: false, size: 8, price: 0.90, moq: 1000, supplier: 'Supplier B'}
-            ];
+            // Update vendor names array
+            const newVendorNames = Array.from(vendorNameInputs).map(input => input.value.trim());
             
-            sampleData.forEach(item => {
-                const newRow = document.createElement('tr');
-                newRow.innerHTML = `
-                    <td><input type="checkbox" class="has-sticker" ${item.hassticker ? 'checked' : ''}></td>
-                    <td><input type="number" step="0.1" class="jar-size" value="${item.size}"></td>
-                    <td><input type="number" step="0.01" class="price" value="${item.price}"></td>
-                    <td><input type="number" class="moq" value="${item.moq}"></td>
-                    <td><input type="text" class="supplier" value="${item.supplier}"></td>
-                    <td><button onclick="removeRow(this)">Remove</button></td>
-                `;
-                document.querySelector('#data-entry-table tbody').appendChild(newRow);
-            });
-        }
-        
-        // Paste data handling
-        function detectAndLoadPastedData() {
-            const pasteContent = document.getElementById('paste-area').value.trim();
-            if (!pasteContent) {
-                alert('Please paste data before loading.');
-                return;
-            }
+            // Check if the number of vendors has changed
+            const oldVendorCount = vendorNames.length;
+            const newVendorCount = newVendorNames.length;
             
-            try {
-                // Try to parse as JSON first
-                if (pasteContent.startsWith('[') || pasteContent.startsWith('{')) {
-                    jarData = JSON.parse(pasteContent);
-                    
-                    // Handle object structure differences
-                    jarData = jarData.map(item => {
-                        const normalized = {};
-                        
-                        // Map various possible key names to our standard keys
-                        for (const [key, value] of Object.entries(item)) {
-                            const lowerKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
-                            
-                            if (lowerKey.includes('sticker')) {
-                                if (typeof value === 'boolean') {
-                                    normalized.hassticker = value;
-                                } else {
-                                    normalized.hassticker = value === 'Yes' || value === '1' || value === 'true' || value === true;
-                                }
-                            }
-                            else if (lowerKey.includes('size')) normalized.size = parseFloat(value);
-                            else if (lowerKey.includes('price')) normalized.price = parseFloat(value);
-                            else if (lowerKey.includes('moq') || lowerKey.includes('minimum')) normalized.moq = parseFloat(value);
-                            else if (lowerKey.includes('supplier') || lowerKey.includes('vendor')) normalized.supplier = value;
-                            else normalized[lowerKey] = value; // Keep other fields
-                        }
-                        
-                        return normalized;
-                    });
-                } else {
-                    // Parse as CSV
-                    jarData = parseCSV(pasteContent);
-                }
-                
-                renderTable();
-                showComparisonSection();
-            } catch (error) {
-                alert('Error parsing data: ' + error.message + '. Please check the format and try again.');
-            }
-        }
-        
-        function loadSamplePasteData() {
-            document.getElementById('paste-area').value = 
-`Has Sticker,Size,Price,MOQ,Supplier
-Yes,4,0.85,1000,Supplier A
-No,4,0.70,1000,Supplier A
-Yes,8,1.10,1500,Supplier A
-No,8,0.95,1500,Supplier A
-Yes,16,1.45,2000,Supplier A
-No,16,1.30,2000,Supplier A
-Yes,4,0.82,2000,Supplier B
-No,4,0.66,2000,Supplier B
-Yes,8,1.05,1000,Supplier B
-No,8,0.90,1000,Supplier B`;
-        }
-        
-        // Sample CSV download
-        function downloadSampleCSV() {
-            const csvContent = 
-`Has Sticker,Size,Price,MOQ,Supplier
-Yes,4,0.85,1000,Supplier A
-No,4,0.70,1000,Supplier A
-Yes,8,1.10,1500,Supplier A
-No,8,0.95,1500,Supplier A
-Yes,16,1.45,2000,Supplier A
-No,16,1.30,2000,Supplier A
-Yes,4,0.82,2000,Supplier B
-No,4,0.66,2000,Supplier B
-Yes,8,1.05,1000,Supplier B
-No,8,0.90,1000,Supplier B`;
+            // Update vendor names
+            vendorNames = newVendorNames;
             
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.setAttribute('href', url);
-            link.setAttribute('download', 'sample_jar_quotes.csv');
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-        
-        // Display functionality
-        function showComparisonSection() {
-            document.getElementById('comparison-section').classList.remove('hidden');
-            document.querySelector('.filter-controls').style.display = 'block';
-            populateFilterOptions();
-            generateAnalysis();
-            
-            // Add event listeners for filtering and sorting
-            document.getElementById('with-sticker').addEventListener('change', filterTable);
-            document.getElementById('without-sticker').addEventListener('change', filterTable);
-            document.getElementById('jar-size').addEventListener('change', filterTable);
-            document.getElementById('supplier').addEventListener('change', filterTable);
-            document.getElementById('reset-filters').addEventListener('click', resetFilters);
-            document.getElementById('highlight-best-value').addEventListener('click', highlightBestValues);
-            
-            const headers = document.querySelectorAll('#jar-table th[data-sort]');
-            headers.forEach(header => {
-                header.addEventListener('click', function() {
-                    sortTable(this.dataset.sort);
+            // Prepare old data for the new vendor structure
+            if (oldVendorCount !== newVendorCount) {
+                tableData.forEach(row => {
+                    // Ensure each row has the right number of vendor values
+                    if (row.vendorValues.length < newVendorCount) {
+                        // Need to add more vendor columns
+                        const diff = newVendorCount - row.vendorValues.length;
+                        row.vendorValues = [...row.vendorValues, ...new Array(diff).fill('-')];
+                    } else if (row.vendorValues.length > newVendorCount) {
+                        // Need to remove vendor columns
+                        row.vendorValues = row.vendorValues.slice(0, newVendorCount);
+                    }
                 });
-            });
+            }
             
-            // Scroll to the comparison section
-            document.getElementById('comparison-section').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+            // Update table headers
+            updateVendorHeaders();
+            
+            // Re-render the table
+            renderTable();
+            
+            closeModal();
         }
         
         function renderTable() {
-            const tbody = document.querySelector('#jar-table tbody');
+            const tbody = priceTable.querySelector('tbody');
             tbody.innerHTML = '';
             
-            jarData.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.hassticker ? 'Yes' : 'No'}</td>
-                    <td>${item.size || 0}</td>
-                    <td>$${(item.price || 0).toFixed(2)}</td>
-                    <td>${item.moq || 0}</td>
-                    <td>${item.supplier || ''}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-        
-        function populateFilterOptions() {
-            const sizes = new Set();
-            const suppliers = new Set();
+            // Check if we need to render vendor headers
+            updateVendorHeaders();
             
-            jarData.forEach(item => {
-                if (item.size) sizes.add(item.size);
-                if (item.supplier) suppliers.add(item.supplier);
-            });
-            
-            const jarSizeSelect = document.getElementById('jar-size');
-            const supplierSelect = document.getElementById('supplier');
-            
-            // Clear existing options except the first one
-            jarSizeSelect.innerHTML = '<option value="all">All Sizes</option>';
-            supplierSelect.innerHTML = '<option value="all">All Suppliers</option>';
-            
-            // Add new options
-            Array.from(sizes).sort((a, b) => a - b).forEach(size => {
-                const option = document.createElement('option');
-                option.value = size;
-                option.textContent = `${size} oz`;
-                jarSizeSelect.appendChild(option);
-            });
-            
-            Array.from(suppliers).sort().forEach(supplier => {
-                const option = document.createElement('option');
-                option.value = supplier;
-                option.textContent = supplier;
-                supplierSelect.appendChild(option);
-            });
-        }
-        
-        // Filtering and sorting
-        function filterTable() {
-            const withSticker = document.getElementById('with-sticker').checked;
-            const withoutSticker = document.getElementById('without-sticker').checked;
-            const jarSize = parseFloat(document.getElementById('jar-size').value);
-            const supplier = document.getElementById('supplier').value;
-            
-            const rows = document.querySelectorAll('#jar-table tbody tr');
-            
-            rows.forEach(row => {
-                const hasSticker = row.cells[0].textContent === 'Yes';
-                const rowSize = parseFloat(row.cells[1].textContent);
-                const rowSupplier = row.cells[4].textContent;
-                
-                const stickerMatch = (hasSticker && withSticker) || (!hasSticker && withoutSticker);
-                const sizeMatch = isNaN(jarSize) || rowSize === jarSize;
-                const supplierMatch = supplier === 'all' || rowSupplier === supplier;
-                
-                if (stickerMatch && sizeMatch && supplierMatch) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-        
-        function resetFilters() {
-            document.getElementById('with-sticker').checked = true;
-            document.getElementById('without-sticker').checked = true;
-            document.getElementById('jar-size').value = 'all';
-            document.getElementById('supplier').value = 'all';
-            
-            const rows = document.querySelectorAll('#jar-table tbody tr');
-            rows.forEach(row => {
-                row.style.display = '';
-                row.classList.remove('highlight', 'best-value');
-            });
-        }
-        
-        function sortTable(sortBy) {
-            const header = document.querySelector(`th[data-sort="${sortBy}"]`);
-            const isAsc = header.classList.contains('asc');
-            
-            // Reset all headers
-            document.querySelectorAll('th[data-sort]').forEach(h => {
-                h.classList.remove('asc', 'desc');
-            });
-            
-            // Set new sort direction
-            header.classList.add(isAsc ? 'desc' : 'asc');
-            
-            const tbody = document.querySelector('#jar-table tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr'));
-            
-            // Map sortBy to column index
-            const columnMap = {
-                'has-sticker': 0,
-                'size': 1,
-                'price': 2,
-                'moq': 3,
-                'supplier': 4
-            };
-            
-            const columnIndex = columnMap[sortBy];
-            
-            rows.sort((a, b) => {
-                let aVal = a.cells[columnIndex].textContent;
-                let bVal = b.cells[columnIndex].textContent;
-                
-                // Handle Yes/No for sticker
-                if (columnIndex === 0) {
-                    aVal = aVal === 'Yes' ? 1 : 0;
-                    bVal = bVal === 'Yes' ? 1 : 0;
-                    return isAsc ? bVal - aVal : aVal - bVal;
-                }
-                // Convert to numbers for numeric columns
-                else if ([1, 2, 3].includes(columnIndex)) {
-                    // Remove $ sign if present
-                    if (aVal.includes('$')) aVal = aVal.replace('$', '');
-                    if (bVal.includes('$')) bVal = bVal.replace('$', '');
-                    
-                    aVal = parseFloat(aVal);
-                    bVal = parseFloat(bVal);
-                    return isAsc ? bVal - aVal : aVal - bVal;
-                } 
-                // Sort text for supplier
-                else {
-                    return isAsc ? 
-                        bVal.localeCompare(aVal) : 
-                        aVal.localeCompare(bVal);
-                }
-            });
-            
-            // Reorder rows
-            rows.forEach(row => tbody.appendChild(row));
-        }
-        
-        function highlightBestValues() {
-            // Remove existing highlights
-            document.querySelectorAll('#jar-table tbody tr').forEach(row => {
-                row.classList.remove('best-value');
-            });
-            
-            // Get visible rows
-            const visibleRows = Array.from(document.querySelectorAll('#jar-table tbody tr'))
-                .filter(row => row.style.display !== 'none');
-            
-            // Group by size and sticker option
-            const groups = {};
-            visibleRows.forEach(row => {
-                const hasSticker = row.cells[0].textContent === 'Yes';
-                const size = row.cells[1].textContent;
-                const price = parseFloat(row.cells[2].textContent.replace('$', ''));
-                
-                const key = `${size}_${hasSticker ? 'sticker' : 'nosticker'}`;
-                
-                if (!groups[key] || price < groups[key].price) {
-                    groups[key] = { row, price };
-                }
-            });
-            
-            // Highlight best values
-            Object.values(groups).forEach(item => {
-                item.row.classList.add('best-value');
-            });
-        }
-        
-        // Analysis generation
-        function generateAnalysis() {
-            const analysisDiv = document.getElementById('cost-analysis');
-            
-            // Find lowest price for each size and sticker combination
-            const bestPrices = {};
-            
-            jarData.forEach(item => {
-                const key = `${item.size}_${item.hassticker ? 'sticker' : 'nosticker'}`;
-                if (!bestPrices[key] || item.price < bestPrices[key].price) {
-                    bestPrices[key] = { 
-                        price: item.price, 
-                        supplier: item.supplier,
-                        moq: item.moq
-                    };
-                }
-            });
-            
-            // Calculate sticker price difference
-            const stickerCostDiff = {};
-            
-            Object.keys(bestPrices).forEach(key => {
-                const [size, type] = key.split('_');
-                if (type === 'sticker') {
-                    const noStickerKey = `${size}_nosticker`;
-                    if (bestPrices[noStickerKey]) {
-                        stickerCostDiff[size] = bestPrices[key].price - bestPrices[noStickerKey].price;
-                    }
-                }
-            });
-            
-            // Calculate MOQ impact
-            const moqImpact = {};
-            const sizes = new Set();
-            
-            jarData.forEach(item => {
-                sizes.add(item.size);
-                
-                const key = `${item.size}_${item.supplier}`;
-                if (!moqImpact[key] || item.moq > moqImpact[key].moq) {
-                    moqImpact[key] = {
-                        size: item.size,
-                        supplier: item.supplier,
-                        moq: item.moq
-                    };
-                }
-            });
-            
-            // Build analysis HTML
-            let analysisHTML = `
-                <h3>Price Analysis Summary</h3>
-                
-                <h4>Best Prices by Size:</h4>
-                <ul>
-            `;
-            
-            // Sort sizes for display
-            const sortedSizes = Array.from(sizes).sort((a, b) => a - b);
-            
-            sortedSizes.forEach(size => {
-                const withStickerKey = `${size}_sticker`;
-                const noStickerKey = `${size}_nosticker`;
-                
-                if (bestPrices[withStickerKey]) {
-                    analysisHTML += `<li><strong>${size} oz with sticker:</strong> $${bestPrices[withStickerKey].price.toFixed(2)} from ${bestPrices[withStickerKey].supplier} (MOQ: ${bestPrices[withStickerKey].moq})</li>`;
-                }
-                
-                if (bestPrices[noStickerKey]) {
-                    analysisHTML += `<li><strong>${size} oz without sticker:</strong> $${bestPrices[noStickerKey].price.toFixed(2)} from ${bestPrices[noStickerKey].supplier} (MOQ: ${bestPrices[noStickerKey].moq})</li>`;
-                }
-            });
-            
-            analysisHTML += `
-                </ul>
-                
-                <h4>Sticker Cost Analysis:</h4>
-                <ul>
-            `;
-            
-            // Display sticker cost differences
-            sortedSizes.forEach(size => {
-                if (stickerCostDiff[size]) {
-                    const percentage = (stickerCostDiff[size] / bestPrices[`${size}_nosticker`].price * 100).toFixed(1);
-                    analysisHTML += `<li><strong>${size} oz jars:</strong> Adding stickers costs $${stickerCostDiff[size].toFixed(2)} more per jar (${percentage}% increase)</li>`;
-                }
-            });
-            
-            analysisHTML += `
-                </ul>
-                
-                <h4>MOQ Considerations:</h4>
-                <ul>
-            `;
-            
-            // Display MOQ information
-            const supplierMOQs = {};
-            
-            Object.values(moqImpact).forEach(item => {
-                if (!supplierMOQs[item.supplier]) {
-                    supplierMOQs[item.supplier] = [];
-                }
-                supplierMOQs[item.supplier].push(item);
-            });
-            
-            Object.entries(supplierMOQs).forEach(([supplier, items]) => {
-                // Find highest MOQ for this supplier
-                const highestMOQ = Math.max(...items.map(item => item.moq));
-                const sizesWithHighestMOQ = items.filter(item => item.moq === highestMOQ).map(item => `${item.size} oz`).join(', ');
-                
-                analysisHTML += `<li><strong>${supplier}:</strong> Highest MOQ is ${highestMOQ} units for ${sizesWithHighestMOQ} jars</li>`;
-            });
-            
-            analysisHTML += `
-                </ul>
-                
-                <h4>Final Recommendations:</h4>
-                <p>Based on your quotes, here are the best options to consider:</p>
-                <ul>
-            `;
-            
-            // Generate recommendations based on best value
-            let bestOverallSupplier = findBestOverallSupplier();
-            let lowestMOQSupplier = findLowestMOQSupplier();
-            
-            if (bestOverallSupplier) {
-                analysisHTML += `<li><strong>Best overall pricing:</strong> ${bestOverallSupplier} offers the most competitive pricing across sizes</li>`;
+            if (tableData.length === 0) {
+                return;
             }
             
-            if (lowestMOQSupplier) {
-                analysisHTML += `<li><strong>Lowest minimum order:</strong> ${lowestMOQSupplier} has the lowest MOQ requirements</li>`;
-            }
-            
-            // Add size-specific recommendations
-            sortedSizes.forEach(size => {
-                const withStickerKey = `${size}_sticker`;
-                const noStickerKey = `${size}_nosticker`;
-                
-                if (bestPrices[withStickerKey] && bestPrices[noStickerKey]) {
-                    // If the same supplier is best for both with and without sticker
-                    if (bestPrices[withStickerKey].supplier === bestPrices[noStickerKey].supplier) {
-                        analysisHTML += `<li><strong>${size} oz jars:</strong> ${bestPrices[withStickerKey].supplier} offers best pricing for both sticker and non-sticker options</li>`;
-                    }
+            // Sort data by product, description, and amount
+            const sortedData = [...tableData].sort((a, b) => {
+                // First compare products
+                if (a.product !== b.product) {
+                    return a.product.localeCompare(b.product);
                 }
+                // Then compare descriptions
+                if (a.description !== b.description) {
+                    return a.description.localeCompare(b.description);
+                }
+                // Then compare amounts (numerically)
+                const amountA = parseFloat(a.amount.replace(/,/g, ''));
+                const amountB = parseFloat(b.amount.replace(/,/g, ''));
+                return amountA - amountB;
             });
             
-            analysisHTML += `
-                </ul>
-            `;
-            
-            analysisDiv.innerHTML = analysisHTML;
-        }
-        
-        function findBestOverallSupplier() {
-            const supplierPoints = {};
-            
-            // Group data by size and sticker option
+            // Group data by product and description
             const groups = {};
-            jarData.forEach(item => {
-                const key = `${item.size}_${item.hassticker ? 'sticker' : 'nosticker'}`;
+            sortedData.forEach(row => {
+                const key = `${row.product}|${row.description}`;
                 if (!groups[key]) {
                     groups[key] = [];
                 }
-                groups[key].push(item);
+                groups[key].push(row);
             });
             
-            // For each group, give points to the supplier with the best price
-            Object.values(groups).forEach(items => {
-                items.sort((a, b) => a.price - b.price);
-                const bestItem = items[0];
+            // Render each group
+            Object.keys(groups).forEach(key => {
+                const rows = groups[key];
                 
-                if (!supplierPoints[bestItem.supplier]) {
-                    supplierPoints[bestItem.supplier] = 0;
-                }
-                supplierPoints[bestItem.supplier] += 1;
+                // Render each row in the group
+                rows.forEach((row, index) => {
+                    const tr = document.createElement('tr');
+                    
+                    // Only show product and description in the first row of the group
+                    const isFirstInGroup = index === 0;
+                    
+                    // No. column
+                    const tdNo = document.createElement('td');
+                    tdNo.textContent = row.no;
+                    tr.appendChild(tdNo);
+                    
+                    // Image column
+                    const tdImage = document.createElement('td');
+                    if (isFirstInGroup && row.image && imageCache[row.image]) {
+                        const img = document.createElement('img');
+                        img.src = imageCache[row.image];
+                        img.style.maxWidth = '100px';
+                        img.style.maxHeight = '100px';
+                        tdImage.appendChild(img);
+                    }
+                    tr.appendChild(tdImage);
+                    
+                    // Product column
+                    const tdProduct = document.createElement('td');
+                    if (isFirstInGroup) {
+                        tdProduct.innerHTML = formatProductText(row.product);
+                    }
+                    tr.appendChild(tdProduct);
+                    
+                    // Description column
+                    const tdDescription = document.createElement('td');
+                    if (isFirstInGroup) {
+                        tdDescription.innerHTML = row.description;
+                        
+                        // Highlight "With" in red if description contains "With"
+                        if (row.description.includes('With')) {
+                            tdDescription.innerHTML = row.description.replace(/(With)/g, '<span class="highlight-red">$1</span>');
+                        }
+                    }
+                    tr.appendChild(tdDescription);
+                    
+                    // Amount column
+                    const tdAmount = document.createElement('td');
+                    tdAmount.textContent = row.amount;
+                    tr.appendChild(tdAmount);
+                    
+                    // Vendor value columns
+                    row.vendorValues.forEach((value, i) => {
+                        // Only create as many cells as we have vendor names
+                        if (i < vendorNames.length) {
+                            const tdVendor = document.createElement('td');
+                            tdVendor.textContent = value;
+                            tr.appendChild(tdVendor);
+                        }
+                    });
+                    
+                    tbody.appendChild(tr);
+                });
             });
-            
-            // Find supplier with most points
-            let bestSupplier = null;
-            let maxPoints = 0;
-            
-            Object.entries(supplierPoints).forEach(([supplier, points]) => {
-                if (points > maxPoints) {
-                    maxPoints = points;
-                    bestSupplier = supplier;
-                }
-            });
-            
-            return bestSupplier;
         }
         
-        function findLowestMOQSupplier() {
-            const supplierMinMOQs = {};
+        function updateVendorHeaders() {
+            // Remove existing vendor headers
+            const headerCells = headerRow.querySelectorAll('th');
+            for (let i = headerCells.length - 1; i >= 5; i--) {
+                headerRow.removeChild(headerCells[i]);
+            }
             
-            // Find minimum MOQ for each supplier
-            jarData.forEach(item => {
-                if (!supplierMinMOQs[item.supplier] || item.moq < supplierMinMOQs[item.supplier]) {
-                    supplierMinMOQs[item.supplier] = item.moq;
-                }
+            // Add current vendor headers
+            vendorNames.forEach(vendor => {
+                const th = document.createElement('th');
+                th.textContent = vendor;
+                th.className = 'vendor-col';
+                headerRow.appendChild(th);
             });
-            
-            // Find supplier with lowest minimum MOQ
-            let lowestMOQSupplier = null;
-            let lowestMOQ = Infinity;
-            
-            Object.entries(supplierMinMOQs).forEach(([supplier, moq]) => {
-                if (moq < lowestMOQ) {
-                    lowestMOQ = moq;
-                    lowestMOQSupplier = supplier;
-                }
-            });
-            
-            return lowestMOQSupplier;
         }
         
-        // Export and save functionality
         function exportToCSV() {
-            // Create CSV content
-            let csvContent = 'Has Sticker,Size,Price,MOQ,Supplier\n';
+            if (tableData.length === 0) {
+                alert('No data to export');
+                return;
+            }
             
-            jarData.forEach(item => {
-                csvContent += `${item.hassticker ? 'Yes' : 'No'},${item.size || 0},${item.price || 0},${item.moq || 0},${item.supplier || ''}\n`;
+            // Create header row
+            let csvContent = `No.,Image,Product,Description,Amount,${vendorNames.join(',')}\n`;
+            
+            // Add data rows
+            tableData.forEach(row => {
+                // Prepare product text without HTML
+                const cleanProduct = row.product.replace(/\n/g, ' ');
+                
+                // Create CSV row
+                csvContent += `${row.no},"",${cleanProduct ? `"${cleanProduct}"` : ''},${row.description ? `"${row.description}"` : ''},${row.amount},${row.vendorValues.slice(0, vendorNames.length).join(',')}\n`;
             });
             
-            // Create download link
+            // Create and trigger download
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            const date = new Date().toISOString().slice(0, 10);
             link.setAttribute('href', url);
-            link.setAttribute('download', `jar_quotes_${date}.csv`);
+            link.setAttribute('download', 'price_comparison.csv');
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+        
+        function saveData() {
+            try {
+                // Prepare data to save
+                const dataToSave = {
+                    tableData: tableData,
+                    vendorNames: vendorNames,
+                    imageCache: imageCache,
+                    rowCounter: rowCounter
+                };
+                
+                // Save to localStorage
+                localStorage.setItem('priceComparisonData', JSON.stringify(dataToSave));
+                alert('Data saved successfully!');
+            } catch (error) {
+                console.error('Error saving data:', error);
+                alert('Error saving data: ' + error.message);
+            }
+        }
+        
+        function loadSavedData() {
+            try {
+                const savedData = localStorage.getItem('priceComparisonData');
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    
+                    tableData = parsedData.tableData || [];
+                    vendorNames = parsedData.vendorNames || [];
+                    imageCache = parsedData.imageCache || {};
+                    rowCounter = parsedData.rowCounter || 1;
+                    
+                    // If no vendors have been set up, don't render the table yet
+                    if (vendorNames.length > 0) {
+                        // Render the table with the loaded data
+                        renderTable();
+                    } else {
+                        // Prompt user to set up vendors
+                        setTimeout(() => {
+                            alert('Please set up your vendors first by clicking "Manage Vendors".');
+                        }, 500);
+                    }
+                } else {
+                    // No saved data, prompt user to set up vendors
+                    setTimeout(() => {
+                        alert('Welcome! Please set up your vendors first by clicking "Manage Vendors".');
+                    }, 500);
+                }
+            } catch (error) {
+                console.error('Error loading saved data:', error);
+            }
         }
         
         function printTable() {
             window.print();
         }
-        
-        function saveDataLocally() {
-            try {
-                localStorage.setItem('jarQuoteData', JSON.stringify(jarData));
-                alert('Data saved successfully! It will be available next time you open this page.');
-            } catch (error) {
-                alert('Error saving data: ' + error.message);
-            }
-        }
-        
-        // Check for saved data on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                const savedData = localStorage.getItem('jarQuoteData');
-                if (savedData) {
-                    const shouldLoad = confirm('Found previously saved quote data. Would you like to load it?');
-                    if (shouldLoad) {
-                        jarData = JSON.parse(savedData);
-                        renderTable();
-                        showComparisonSection();
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading saved data:', error);
-            }
-        });
     </script>
 </body>
 </html>
