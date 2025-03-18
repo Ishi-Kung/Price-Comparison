@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glass Jar Packaging Price Comparison</title>
+    <title>Glass Jar Quote Comparison</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -248,14 +248,24 @@
                 text-align: left;
             }
         }
+        
+        input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        
+        .checkbox-label {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 15px;
+        }
     </style>
 </head>
 <body>
-    <h1>Glass Jar Packaging Price Comparison</h1>
+    <h1>Glass Jar Quote Comparison</h1>
     
     <div class="section">
-        <h2>Load Your Price Data</h2>
-        <p>Choose how to load your glass jar pricing data:</p>
+        <h2>Load Your Quote Data</h2>
+        <p>Choose how to load your glass jar quotes:</p>
         
         <div class="tab-container">
             <div class="tab">
@@ -265,9 +275,9 @@
             </div>
             
             <div id="file-upload" class="tabcontent" style="display: block;">
-                <p>Upload a CSV file with your jar pricing data:</p>
+                <p>Upload a CSV file with your jar quotes:</p>
                 <input type="file" id="csv-file" accept=".csv">
-                <p class="helper-text">Your CSV should include columns for: Jar Type, Size (oz), Base Price, Bulk Price, Minimum Order, and Supplier</p>
+                <p class="helper-text">Your CSV should include columns for: Has Sticker, Size (oz), Price, MOQ (Minimum Order Quantity), and Supplier</p>
                 <a href="#" class="sample-data" onclick="downloadSampleCSV()">Download Sample CSV Template</a>
                 <div class="button-container" style="margin-top: 15px;">
                     <button onclick="loadCSV()" class="primary-btn">Load Data from CSV</button>
@@ -275,28 +285,26 @@
             </div>
             
             <div id="manual-entry" class="tabcontent">
-                <p>Enter your data into the table below:</p>
+                <p>Enter your quote data into the table below:</p>
                 <div class="table-container">
                     <table id="data-entry-table">
                         <thead>
                             <tr>
-                                <th>Jar Type</th>
+                                <th>Has Sticker</th>
                                 <th>Size (oz)</th>
-                                <th>Base Price ($)</th>
-                                <th>Bulk Price ($)</th>
-                                <th>Minimum Order</th>
+                                <th>Price ($)</th>
+                                <th>MOQ</th>
                                 <th>Supplier</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><input type="text" class="jar-type" placeholder="e.g. Mason"></td>
-                                <td><input type="number" class="jar-size" placeholder="e.g. 8"></td>
-                                <td><input type="number" step="0.01" class="base-price" placeholder="e.g. 1.10"></td>
-                                <td><input type="number" step="0.01" class="bulk-price" placeholder="e.g. 0.78"></td>
-                                <td><input type="number" class="min-order" placeholder="e.g. 100"></td>
-                                <td><input type="text" class="supplier" placeholder="e.g. GlassCraft"></td>
+                                <td><input type="checkbox" class="has-sticker"></td>
+                                <td><input type="number" step="0.1" class="jar-size" placeholder="e.g. 8"></td>
+                                <td><input type="number" step="0.01" class="price" placeholder="e.g. 1.10"></td>
+                                <td><input type="number" class="moq" placeholder="e.g. 1000"></td>
+                                <td><input type="text" class="supplier" placeholder="e.g. Supplier A"></td>
                                 <td><button onclick="removeRow(this)">Remove</button></td>
                             </tr>
                         </tbody>
@@ -315,7 +323,7 @@
                 <div class="button-container">
                     <button onclick="detectAndLoadPastedData()" class="primary-btn">Parse and Load Data</button>
                 </div>
-                <p class="helper-text">CSV Format Example: Jar Type,Size,Base Price,Bulk Price,Min Order,Supplier<br>Mason,8,1.10,0.78,100,GlassCraft</p>
+                <p class="helper-text">CSV Format Example: Has Sticker,Size,Price,MOQ,Supplier<br>Yes,8,1.10,1000,Supplier A</p>
                 <a href="#" class="sample-data" onclick="loadSamplePasteData()">Load Sample Data Format</a>
             </div>
         </div>
@@ -324,10 +332,13 @@
     <div id="comparison-section" class="hidden">
         <div class="filter-controls">
             <div class="filter-group">
-                <label for="jar-type">Jar Type:</label>
-                <select id="jar-type">
-                    <option value="all">All Types</option>
-                </select>
+                <label>Sticker:</label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="with-sticker" checked> With
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="without-sticker" checked> Without
+                </label>
             </div>
             
             <div class="filter-group">
@@ -349,16 +360,15 @@
         </div>
         
         <div class="section">
-            <h2>Price Comparison Table</h2>
+            <h2>Quote Comparison Table</h2>
             <div class="table-container">
                 <table id="jar-table">
                     <thead>
                         <tr>
-                            <th data-sort="jar-type">Jar Type</th>
+                            <th data-sort="has-sticker">Has Sticker</th>
                             <th data-sort="size">Size (oz)</th>
-                            <th data-sort="base-price">Base Price ($)</th>
-                            <th data-sort="bulk-price">Bulk Price ($)</th>
-                            <th data-sort="min-order">Minimum Order</th>
+                            <th data-sort="price">Price ($)</th>
+                            <th data-sort="moq">MOQ</th>
                             <th data-sort="supplier">Supplier</th>
                         </tr>
                     </thead>
@@ -384,7 +394,7 @@
     </div>
     
     <footer>
-        <p>Glass Jar Pricing Tool - For internal use only</p>
+        <p>Glass Jar Quote Comparison Tool - For internal use only</p>
         <p>Data is stored locally in your browser and is not sent to any server</p>
     </footer>
 
@@ -447,13 +457,18 @@
                 for (let j = 0; j < headers.length; j++) {
                     let value = values[j] ? values[j].trim() : '';
                     
-                    // Convert numeric values
-                    if (['Size', 'Base Price', 'Bulk Price', 'Minimum Order'].includes(headers[j])) {
-                        value = parseFloat(value) || 0;
-                    }
-                    
                     const key = headers[j].replace(/ /g, '').toLowerCase();
-                    row[key] = value;
+                    
+                    // Handle special cases
+                    if (key === 'hassticker') {
+                        row[key] = value.toLowerCase() === 'yes' || value === '1' || value.toLowerCase() === 'true';
+                    }
+                    else if (['size', 'price', 'moq'].includes(key)) {
+                        row[key] = parseFloat(value) || 0;
+                    }
+                    else {
+                        row[key] = value;
+                    }
                 }
                 
                 result.push(row);
@@ -467,12 +482,11 @@
             const tbody = document.querySelector('#data-entry-table tbody');
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
-                <td><input type="text" class="jar-type" placeholder="e.g. Mason"></td>
-                <td><input type="number" class="jar-size" placeholder="e.g. 8"></td>
-                <td><input type="number" step="0.01" class="base-price" placeholder="e.g. 1.10"></td>
-                <td><input type="number" step="0.01" class="bulk-price" placeholder="e.g. 0.78"></td>
-                <td><input type="number" class="min-order" placeholder="e.g. 100"></td>
-                <td><input type="text" class="supplier" placeholder="e.g. GlassCraft"></td>
+                <td><input type="checkbox" class="has-sticker"></td>
+                <td><input type="number" step="0.1" class="jar-size" placeholder="e.g. 8"></td>
+                <td><input type="number" step="0.01" class="price" placeholder="e.g. 1.10"></td>
+                <td><input type="number" class="moq" placeholder="e.g. 1000"></td>
+                <td><input type="text" class="supplier" placeholder="e.g. Supplier A"></td>
                 <td><button onclick="removeRow(this)">Remove</button></td>
             `;
             tbody.appendChild(newRow);
@@ -488,20 +502,18 @@
             jarData = [];
             
             rows.forEach(row => {
-                const jarType = row.querySelector('.jar-type').value.trim();
+                const hasSticker = row.querySelector('.has-sticker').checked;
                 const size = parseFloat(row.querySelector('.jar-size').value);
-                const basePrice = parseFloat(row.querySelector('.base-price').value);
-                const bulkPrice = parseFloat(row.querySelector('.bulk-price').value);
-                const minOrder = parseFloat(row.querySelector('.min-order').value);
+                const price = parseFloat(row.querySelector('.price').value);
+                const moq = parseFloat(row.querySelector('.moq').value);
                 const supplier = row.querySelector('.supplier').value.trim();
                 
-                if (jarType && !isNaN(size) && !isNaN(basePrice)) {
+                if (!isNaN(size) && !isNaN(price)) {
                     jarData.push({
-                        jartype: jarType,
+                        hassticker: hasSticker,
                         size: size,
-                        baseprice: basePrice,
-                        bulkprice: bulkPrice || 0,
-                        minimumorder: minOrder || 0,
+                        price: price,
+                        moq: moq || 0,
                         supplier: supplier
                     });
                 }
@@ -520,21 +532,25 @@
             document.querySelector('#data-entry-table tbody').innerHTML = '';
             
             const sampleData = [
-                {jartype: 'Mason', size: 4, baseprice: 0.85, bulkprice: 0.62, minimumorder: 100, supplier: 'Supplier A'},
-                {jartype: 'Mason', size: 8, baseprice: 1.10, bulkprice: 0.78, minimumorder: 100, supplier: 'Supplier A'},
-                {jartype: 'Round', size: 4, baseprice: 0.75, bulkprice: 0.58, minimumorder: 100, supplier: 'Supplier B'},
-                {jartype: 'Round', size: 8, baseprice: 0.95, bulkprice: 0.72, minimumorder: 100, supplier: 'Supplier B'},
-                {jartype: 'Hexagon', size: 8, baseprice: 1.40, bulkprice: 1.05, minimumorder: 250, supplier: 'Supplier C'}
+                {hassticker: true, size: 4, price: 0.85, moq: 1000, supplier: 'Supplier A'},
+                {hassticker: false, size: 4, price: 0.70, moq: 1000, supplier: 'Supplier A'},
+                {hassticker: true, size: 8, price: 1.10, moq: 1500, supplier: 'Supplier A'},
+                {hassticker: false, size: 8, price: 0.95, moq: 1500, supplier: 'Supplier A'},
+                {hassticker: true, size: 16, price: 1.45, moq: 2000, supplier: 'Supplier A'},
+                {hassticker: false, size: 16, price: 1.30, moq: 2000, supplier: 'Supplier A'},
+                {hassticker: true, size: 4, price: 0.82, moq: 2000, supplier: 'Supplier B'},
+                {hassticker: false, size: 4, price: 0.66, moq: 2000, supplier: 'Supplier B'},
+                {hassticker: true, size: 8, price: 1.05, moq: 1000, supplier: 'Supplier B'},
+                {hassticker: false, size: 8, price: 0.90, moq: 1000, supplier: 'Supplier B'}
             ];
             
             sampleData.forEach(item => {
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
-                    <td><input type="text" class="jar-type" value="${item.jartype}"></td>
-                    <td><input type="number" class="jar-size" value="${item.size}"></td>
-                    <td><input type="number" step="0.01" class="base-price" value="${item.baseprice}"></td>
-                    <td><input type="number" step="0.01" class="bulk-price" value="${item.bulkprice}"></td>
-                    <td><input type="number" class="min-order" value="${item.minimumorder}"></td>
+                    <td><input type="checkbox" class="has-sticker" ${item.hassticker ? 'checked' : ''}></td>
+                    <td><input type="number" step="0.1" class="jar-size" value="${item.size}"></td>
+                    <td><input type="number" step="0.01" class="price" value="${item.price}"></td>
+                    <td><input type="number" class="moq" value="${item.moq}"></td>
                     <td><input type="text" class="supplier" value="${item.supplier}"></td>
                     <td><button onclick="removeRow(this)">Remove</button></td>
                 `;
@@ -563,11 +579,16 @@
                         for (const [key, value] of Object.entries(item)) {
                             const lowerKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
                             
-                            if (lowerKey.includes('type') || lowerKey.includes('jar')) normalized.jartype = value;
+                            if (lowerKey.includes('sticker')) {
+                                if (typeof value === 'boolean') {
+                                    normalized.hassticker = value;
+                                } else {
+                                    normalized.hassticker = value === 'Yes' || value === '1' || value === 'true' || value === true;
+                                }
+                            }
                             else if (lowerKey.includes('size')) normalized.size = parseFloat(value);
-                            else if (lowerKey.includes('base') || (lowerKey.includes('price') && !lowerKey.includes('bulk'))) normalized.baseprice = parseFloat(value);
-                            else if (lowerKey.includes('bulk')) normalized.bulkprice = parseFloat(value);
-                            else if (lowerKey.includes('min') || lowerKey.includes('order')) normalized.minimumorder = parseFloat(value);
+                            else if (lowerKey.includes('price')) normalized.price = parseFloat(value);
+                            else if (lowerKey.includes('moq') || lowerKey.includes('minimum')) normalized.moq = parseFloat(value);
                             else if (lowerKey.includes('supplier') || lowerKey.includes('vendor')) normalized.supplier = value;
                             else normalized[lowerKey] = value; // Keep other fields
                         }
@@ -588,29 +609,39 @@
         
         function loadSamplePasteData() {
             document.getElementById('paste-area').value = 
-`Jar Type,Size,Base Price,Bulk Price,Minimum Order,Supplier
-Mason,4,0.85,0.62,100,Supplier A
-Mason,8,1.10,0.78,100,Supplier A
-Round,4,0.75,0.58,100,Supplier B
-Round,8,0.95,0.72,100,Supplier B
-Hexagon,8,1.40,1.05,250,Supplier C`;
+`Has Sticker,Size,Price,MOQ,Supplier
+Yes,4,0.85,1000,Supplier A
+No,4,0.70,1000,Supplier A
+Yes,8,1.10,1500,Supplier A
+No,8,0.95,1500,Supplier A
+Yes,16,1.45,2000,Supplier A
+No,16,1.30,2000,Supplier A
+Yes,4,0.82,2000,Supplier B
+No,4,0.66,2000,Supplier B
+Yes,8,1.05,1000,Supplier B
+No,8,0.90,1000,Supplier B`;
         }
         
         // Sample CSV download
         function downloadSampleCSV() {
             const csvContent = 
-`Jar Type,Size,Base Price,Bulk Price,Minimum Order,Supplier
-Mason,4,0.85,0.62,100,Supplier A
-Mason,8,1.10,0.78,100,Supplier A
-Round,4,0.75,0.58,100,Supplier B
-Round,8,0.95,0.72,100,Supplier B
-Hexagon,8,1.40,1.05,250,Supplier C`;
+`Has Sticker,Size,Price,MOQ,Supplier
+Yes,4,0.85,1000,Supplier A
+No,4,0.70,1000,Supplier A
+Yes,8,1.10,1500,Supplier A
+No,8,0.95,1500,Supplier A
+Yes,16,1.45,2000,Supplier A
+No,16,1.30,2000,Supplier A
+Yes,4,0.82,2000,Supplier B
+No,4,0.66,2000,Supplier B
+Yes,8,1.05,1000,Supplier B
+No,8,0.90,1000,Supplier B`;
             
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.setAttribute('href', url);
-            link.setAttribute('download', 'sample_jar_data.csv');
+            link.setAttribute('download', 'sample_jar_quotes.csv');
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
@@ -625,7 +656,8 @@ Hexagon,8,1.40,1.05,250,Supplier C`;
             generateAnalysis();
             
             // Add event listeners for filtering and sorting
-            document.getElementById('jar-type').addEventListener('change', filterTable);
+            document.getElementById('with-sticker').addEventListener('change', filterTable);
+            document.getElementById('without-sticker').addEventListener('change', filterTable);
             document.getElementById('jar-size').addEventListener('change', filterTable);
             document.getElementById('supplier').addEventListener('change', filterTable);
             document.getElementById('reset-filters').addEventListener('click', resetFilters);
@@ -652,11 +684,10 @@ Hexagon,8,1.40,1.05,250,Supplier C`;
             jarData.forEach(item => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${item.jartype || ''}</td>
+                    <td>${item.hassticker ? 'Yes' : 'No'}</td>
                     <td>${item.size || 0}</td>
-                    <td>${(item.baseprice || 0).toFixed(2)}</td>
-                    <td>${(item.bulkprice || 0).toFixed(2)}</td>
-                    <td>${item.minimumorder || 0}</td>
+                    <td>$${(item.price || 0).toFixed(2)}</td>
+                    <td>${item.moq || 0}</td>
                     <td>${item.supplier || ''}</td>
                 `;
                 tbody.appendChild(row);
@@ -664,41 +695,30 @@ Hexagon,8,1.40,1.05,250,Supplier C`;
         }
         
         function populateFilterOptions() {
-            const jarTypes = new Set();
             const sizes = new Set();
             const suppliers = new Set();
             
             jarData.forEach(item => {
-                if (item.jartype) jarTypes.add(item.jartype);
                 if (item.size) sizes.add(item.size);
                 if (item.supplier) suppliers.add(item.supplier);
             });
             
-            const jarTypeSelect = document.getElementById('jar-type');
             const jarSizeSelect = document.getElementById('jar-size');
             const supplierSelect = document.getElementById('supplier');
             
             // Clear existing options except the first one
-            jarTypeSelect.innerHTML = '<option value="all">All Types</option>';
             jarSizeSelect.innerHTML = '<option value="all">All Sizes</option>';
             supplierSelect.innerHTML = '<option value="all">All Suppliers</option>';
             
             // Add new options
-            jarTypes.forEach(type => {
-                const option = document.createElement('option');
-                option.value = type;
-                option.textContent = type;
-                jarTypeSelect.appendChild(option);
-            });
-            
-            sizes.forEach(size => {
+            Array.from(sizes).sort((a, b) => a - b).forEach(size => {
                 const option = document.createElement('option');
                 option.value = size;
                 option.textContent = `${size} oz`;
                 jarSizeSelect.appendChild(option);
             });
             
-            suppliers.forEach(supplier => {
+            Array.from(suppliers).sort().forEach(supplier => {
                 const option = document.createElement('option');
                 option.value = supplier;
                 option.textContent = supplier;
@@ -708,22 +728,23 @@ Hexagon,8,1.40,1.05,250,Supplier C`;
         
         // Filtering and sorting
         function filterTable() {
-            const jarType = document.getElementById('jar-type').value;
+            const withSticker = document.getElementById('with-sticker').checked;
+            const withoutSticker = document.getElementById('without-sticker').checked;
             const jarSize = parseFloat(document.getElementById('jar-size').value);
             const supplier = document.getElementById('supplier').value;
             
             const rows = document.querySelectorAll('#jar-table tbody tr');
             
             rows.forEach(row => {
-                const rowJarType = row.cells[0].textContent;
+                const hasSticker = row.cells[0].textContent === 'Yes';
                 const rowSize = parseFloat(row.cells[1].textContent);
-                const rowSupplier = row.cells[5].textContent;
+                const rowSupplier = row.cells[4].textContent;
                 
-                const jarTypeMatch = jarType === 'all' || rowJarType === jarType;
+                const stickerMatch = (hasSticker && withSticker) || (!hasSticker && withoutSticker);
                 const sizeMatch = isNaN(jarSize) || rowSize === jarSize;
                 const supplierMatch = supplier === 'all' || rowSupplier === supplier;
                 
-                if (jarTypeMatch && sizeMatch && supplierMatch) {
+                if (stickerMatch && sizeMatch && supplierMatch) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';
@@ -732,7 +753,8 @@ Hexagon,8,1.40,1.05,250,Supplier C`;
         }
         
         function resetFilters() {
-            document.getElementById('jar-type').value = 'all';
+            document.getElementById('with-sticker').checked = true;
+            document.getElementById('without-sticker').checked = true;
             document.getElementById('jar-size').value = 'all';
             document.getElementById('supplier').value = 'all';
             
@@ -760,12 +782,11 @@ Hexagon,8,1.40,1.05,250,Supplier C`;
             
             // Map sortBy to column index
             const columnMap = {
-                'jar-type': 0,
+                'has-sticker': 0,
                 'size': 1,
-                'base-price': 2,
-                'bulk-price': 3,
-                'min-order': 4,
-                'supplier': 5
+                'price': 2,
+                'moq': 3,
+                'supplier': 4
             };
             
             const columnIndex = columnMap[sortBy];
@@ -774,12 +795,24 @@ Hexagon,8,1.40,1.05,250,Supplier C`;
                 let aVal = a.cells[columnIndex].textContent;
                 let bVal = b.cells[columnIndex].textContent;
                 
+                // Handle Yes/No for sticker
+                if (columnIndex === 0) {
+                    aVal = aVal === 'Yes' ? 1 : 0;
+                    bVal = bVal === 'Yes' ? 1 : 0;
+                    return isAsc ? bVal - aVal : aVal - bVal;
+                }
                 // Convert to numbers for numeric columns
-                if ([1, 2, 3, 4].includes(columnIndex)) {
+                else if ([1, 2, 3].includes(columnIndex)) {
+                    // Remove $ sign if present
+                    if (aVal.includes('$')) aVal = aVal.replace('$', '');
+                    if (bVal.includes('$')) bVal = bVal.replace('$', '');
+                    
                     aVal = parseFloat(aVal);
                     bVal = parseFloat(bVal);
                     return isAsc ? bVal - aVal : aVal - bVal;
-                } else {
+                } 
+                // Sort text for supplier
+                else {
                     return isAsc ? 
                         bVal.localeCompare(aVal) : 
                         aVal.localeCompare(bVal);
@@ -800,19 +833,22 @@ Hexagon,8,1.40,1.05,250,Supplier C`;
             const visibleRows = Array.from(document.querySelectorAll('#jar-table tbody tr'))
                 .filter(row => row.style.display !== 'none');
             
-            // Group by size
-            const sizeGroups = {};
+            // Group by size and sticker option
+            const groups = {};
             visibleRows.forEach(row => {
+                const hasSticker = row.cells[0].textContent === 'Yes';
                 const size = row.cells[1].textContent;
-                const basePrice = parseFloat(row.cells[2].textContent);
+                const price = parseFloat(row.cells[2].textContent.replace('$', ''));
                 
-                if (!sizeGroups[size] || basePrice < sizeGroups[size].price) {
-                    sizeGroups[size] = { row, price: basePrice };
+                const key = `${size}_${hasSticker ? 'sticker' : 'nosticker'}`;
+                
+                if (!groups[key] || price < groups[key].price) {
+                    groups[key] = { row, price };
                 }
             });
             
             // Highlight best values
-            Object.values(sizeGroups).forEach(item => {
+            Object.values(groups).forEach(item => {
                 item.row.classList.add('best-value');
             });
         }
@@ -821,99 +857,223 @@ Hexagon,8,1.40,1.05,250,Supplier C`;
         function generateAnalysis() {
             const analysisDiv = document.getElementById('cost-analysis');
             
-            // Find lowest price jar in each category
-            const jarTypeGroups = {};
+            // Find lowest price for each size and sticker combination
+            const bestPrices = {};
+            
             jarData.forEach(item => {
-                if (!jarTypeGroups[item.jartype]) {
-                    jarTypeGroups[item.jartype] = [];
+                const key = `${item.size}_${item.hassticker ? 'sticker' : 'nosticker'}`;
+                if (!bestPrices[key] || item.price < bestPrices[key].price) {
+                    bestPrices[key] = { 
+                        price: item.price, 
+                        supplier: item.supplier,
+                        moq: item.moq
+                    };
                 }
-                jarTypeGroups[item.jartype].push(item);
             });
             
-            let lowestOverall = { baseprice: Number.MAX_VALUE };
-            let lowestBySize = {};
+            // Calculate sticker price difference
+            const stickerCostDiff = {};
+            
+            Object.keys(bestPrices).forEach(key => {
+                const [size, type] = key.split('_');
+                if (type === 'sticker') {
+                    const noStickerKey = `${size}_nosticker`;
+                    if (bestPrices[noStickerKey]) {
+                        stickerCostDiff[size] = bestPrices[key].price - bestPrices[noStickerKey].price;
+                    }
+                }
+            });
+            
+            // Calculate MOQ impact
+            const moqImpact = {};
+            const sizes = new Set();
             
             jarData.forEach(item => {
-                if (item.baseprice < lowestOverall.baseprice) {
-                    lowestOverall = item;
-                }
+                sizes.add(item.size);
                 
-                const sizeKey = item.size;
-                if (!lowestBySize[sizeKey] || item.baseprice < lowestBySize[sizeKey].baseprice) {
-                    lowestBySize[sizeKey] = item;
+                const key = `${item.size}_${item.supplier}`;
+                if (!moqImpact[key] || item.moq > moqImpact[key].moq) {
+                    moqImpact[key] = {
+                        size: item.size,
+                        supplier: item.supplier,
+                        moq: item.moq
+                    };
                 }
-            });
-            
-            // Calculate price differences
-            const avgBasePrices = {};
-            Object.entries(jarTypeGroups).forEach(([type, items]) => {
-                avgBasePrices[type] = items.reduce((sum, item) => sum + item.baseprice, 0) / items.length;
             });
             
             // Build analysis HTML
             let analysisHTML = `
                 <h3>Price Analysis Summary</h3>
-                <p><strong>Lowest overall price:</strong> ${lowestOverall.jartype} (${lowestOverall.size} oz) at $${lowestOverall.baseprice.toFixed(2)} from ${lowestOverall.supplier}</p>
                 
-                <h4>Best Value by Size:</h4>
+                <h4>Best Prices by Size:</h4>
                 <ul>
             `;
             
-            Object.entries(lowestBySize).sort((a, b) => a[0] - b[0]).forEach(([size, item]) => {
-                analysisHTML += `<li><strong>${size} oz:</strong> ${item.jartype} at $${item.baseprice.toFixed(2)} from ${item.supplier}</li>`;
-            });
+            // Sort sizes for display
+            const sortedSizes = Array.from(sizes).sort((a, b) => a - b);
             
-            analysisHTML += `
-                </ul>
+            sortedSizes.forEach(size => {
+                const withStickerKey = `${size}_sticker`;
+                const noStickerKey = `${size}_nosticker`;
                 
-                <h4>Average Price Comparison:</h4>
-                <ul>
-            `;
-            
-            // Sort by price from lowest to highest
-            const sortedTypes = Object.entries(avgBasePrices).sort((a, b) => a[1] - b[1]);
-            
-            sortedTypes.forEach(([type, avgPrice], index) => {
-                if (index === 0) {
-                    analysisHTML += `<li><strong>${type}:</strong> $${avgPrice.toFixed(2)} (Best overall average)</li>`;
-                } else {
-                    const priceDiff = ((avgPrice / sortedTypes[0][1]) - 1) * 100;
-                    analysisHTML += `<li><strong>${type}:</strong> $${avgPrice.toFixed(2)} (${priceDiff.toFixed(1)}% more expensive than ${sortedTypes[0][0]})</li>`;
+                if (bestPrices[withStickerKey]) {
+                    analysisHTML += `<li><strong>${size} oz with sticker:</strong> $${bestPrices[withStickerKey].price.toFixed(2)} from ${bestPrices[withStickerKey].supplier} (MOQ: ${bestPrices[withStickerKey].moq})</li>`;
+                }
+                
+                if (bestPrices[noStickerKey]) {
+                    analysisHTML += `<li><strong>${size} oz without sticker:</strong> $${bestPrices[noStickerKey].price.toFixed(2)} from ${bestPrices[noStickerKey].supplier} (MOQ: ${bestPrices[noStickerKey].moq})</li>`;
                 }
             });
             
             analysisHTML += `
                 </ul>
                 
-                <h4>Bulk Order Savings:</h4>
-                <p>Average savings when ordering in bulk: ${calculateAvgBulkSavings().toFixed(1)}%</p>
+                <h4>Sticker Cost Analysis:</h4>
+                <ul>
+            `;
+            
+            // Display sticker cost differences
+            sortedSizes.forEach(size => {
+                if (stickerCostDiff[size]) {
+                    const percentage = (stickerCostDiff[size] / bestPrices[`${size}_nosticker`].price * 100).toFixed(1);
+                    analysisHTML += `<li><strong>${size} oz jars:</strong> Adding stickers costs $${stickerCostDiff[size].toFixed(2)} more per jar (${percentage}% increase)</li>`;
+                }
+            });
+            
+            analysisHTML += `
+                </ul>
+                
+                <h4>MOQ Considerations:</h4>
+                <ul>
+            `;
+            
+            // Display MOQ information
+            const supplierMOQs = {};
+            
+            Object.values(moqImpact).forEach(item => {
+                if (!supplierMOQs[item.supplier]) {
+                    supplierMOQs[item.supplier] = [];
+                }
+                supplierMOQs[item.supplier].push(item);
+            });
+            
+            Object.entries(supplierMOQs).forEach(([supplier, items]) => {
+                // Find highest MOQ for this supplier
+                const highestMOQ = Math.max(...items.map(item => item.moq));
+                const sizesWithHighestMOQ = items.filter(item => item.moq === highestMOQ).map(item => `${item.size} oz`).join(', ');
+                
+                analysisHTML += `<li><strong>${supplier}:</strong> Highest MOQ is ${highestMOQ} units for ${sizesWithHighestMOQ} jars</li>`;
+            });
+            
+            analysisHTML += `
+                </ul>
+                
+                <h4>Final Recommendations:</h4>
+                <p>Based on your quotes, here are the best options to consider:</p>
+                <ul>
+            `;
+            
+            // Generate recommendations based on best value
+            let bestOverallSupplier = findBestOverallSupplier();
+            let lowestMOQSupplier = findLowestMOQSupplier();
+            
+            if (bestOverallSupplier) {
+                analysisHTML += `<li><strong>Best overall pricing:</strong> ${bestOverallSupplier} offers the most competitive pricing across sizes</li>`;
+            }
+            
+            if (lowestMOQSupplier) {
+                analysisHTML += `<li><strong>Lowest minimum order:</strong> ${lowestMOQSupplier} has the lowest MOQ requirements</li>`;
+            }
+            
+            // Add size-specific recommendations
+            sortedSizes.forEach(size => {
+                const withStickerKey = `${size}_sticker`;
+                const noStickerKey = `${size}_nosticker`;
+                
+                if (bestPrices[withStickerKey] && bestPrices[noStickerKey]) {
+                    // If the same supplier is best for both with and without sticker
+                    if (bestPrices[withStickerKey].supplier === bestPrices[noStickerKey].supplier) {
+                        analysisHTML += `<li><strong>${size} oz jars:</strong> ${bestPrices[withStickerKey].supplier} offers best pricing for both sticker and non-sticker options</li>`;
+                    }
+                }
+            });
+            
+            analysisHTML += `
+                </ul>
             `;
             
             analysisDiv.innerHTML = analysisHTML;
         }
         
-        function calculateAvgBulkSavings() {
-            let totalSavingsPercent = 0;
-            let count = 0;
+        function findBestOverallSupplier() {
+            const supplierPoints = {};
             
+            // Group data by size and sticker option
+            const groups = {};
             jarData.forEach(item => {
-                if (item.baseprice && item.bulkprice && item.bulkprice > 0) {
-                    const savingsPercent = ((item.baseprice - item.bulkprice) / item.baseprice) * 100;
-                    totalSavingsPercent += savingsPercent;
-                    count++;
+                const key = `${item.size}_${item.hassticker ? 'sticker' : 'nosticker'}`;
+                if (!groups[key]) {
+                    groups[key] = [];
+                }
+                groups[key].push(item);
+            });
+            
+            // For each group, give points to the supplier with the best price
+            Object.values(groups).forEach(items => {
+                items.sort((a, b) => a.price - b.price);
+                const bestItem = items[0];
+                
+                if (!supplierPoints[bestItem.supplier]) {
+                    supplierPoints[bestItem.supplier] = 0;
+                }
+                supplierPoints[bestItem.supplier] += 1;
+            });
+            
+            // Find supplier with most points
+            let bestSupplier = null;
+            let maxPoints = 0;
+            
+            Object.entries(supplierPoints).forEach(([supplier, points]) => {
+                if (points > maxPoints) {
+                    maxPoints = points;
+                    bestSupplier = supplier;
                 }
             });
             
-            return count > 0 ? totalSavingsPercent / count : 0;
+            return bestSupplier;
+        }
+        
+        function findLowestMOQSupplier() {
+            const supplierMinMOQs = {};
+            
+            // Find minimum MOQ for each supplier
+            jarData.forEach(item => {
+                if (!supplierMinMOQs[item.supplier] || item.moq < supplierMinMOQs[item.supplier]) {
+                    supplierMinMOQs[item.supplier] = item.moq;
+                }
+            });
+            
+            // Find supplier with lowest minimum MOQ
+            let lowestMOQSupplier = null;
+            let lowestMOQ = Infinity;
+            
+            Object.entries(supplierMinMOQs).forEach(([supplier, moq]) => {
+                if (moq < lowestMOQ) {
+                    lowestMOQ = moq;
+                    lowestMOQSupplier = supplier;
+                }
+            });
+            
+            return lowestMOQSupplier;
         }
         
         // Export and save functionality
         function exportToCSV() {
             // Create CSV content
-            let csvContent = 'Jar Type,Size,Base Price,Bulk Price,Minimum Order,Supplier\n';
+            let csvContent = 'Has Sticker,Size,Price,MOQ,Supplier\n';
             
             jarData.forEach(item => {
-                csvContent += `${item.jartype || ''},${item.size || 0},${item.baseprice || 0},${item.bulkprice || 0},${item.minimumorder || 0},${item.supplier || ''}\n`;
+                csvContent += `${item.hassticker ? 'Yes' : 'No'},${item.size || 0},${item.price || 0},${item.moq || 0},${item.supplier || ''}\n`;
             });
             
             // Create download link
@@ -922,7 +1082,7 @@ Hexagon,8,1.40,1.05,250,Supplier C`;
             const link = document.createElement('a');
             const date = new Date().toISOString().slice(0, 10);
             link.setAttribute('href', url);
-            link.setAttribute('download', `jar_comparison_${date}.csv`);
+            link.setAttribute('download', `jar_quotes_${date}.csv`);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
@@ -935,7 +1095,7 @@ Hexagon,8,1.40,1.05,250,Supplier C`;
         
         function saveDataLocally() {
             try {
-                localStorage.setItem('jarPricingData', JSON.stringify(jarData));
+                localStorage.setItem('jarQuoteData', JSON.stringify(jarData));
                 alert('Data saved successfully! It will be available next time you open this page.');
             } catch (error) {
                 alert('Error saving data: ' + error.message);
@@ -945,9 +1105,9 @@ Hexagon,8,1.40,1.05,250,Supplier C`;
         // Check for saved data on page load
         document.addEventListener('DOMContentLoaded', function() {
             try {
-                const savedData = localStorage.getItem('jarPricingData');
+                const savedData = localStorage.getItem('jarQuoteData');
                 if (savedData) {
-                    const shouldLoad = confirm('Found previously saved pricing data. Would you like to load it?');
+                    const shouldLoad = confirm('Found previously saved quote data. Would you like to load it?');
                     if (shouldLoad) {
                         jarData = JSON.parse(savedData);
                         renderTable();
