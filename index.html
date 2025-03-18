@@ -26,12 +26,29 @@
             padding-bottom: 10px;
         }
         
+        .section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .data-input {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
         .filter-controls {
             background-color: #ecf0f1;
             padding: 15px;
             border-radius: 5px;
             margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: none;
         }
         
         .filter-group {
@@ -45,7 +62,7 @@
             margin-right: 10px;
         }
         
-        select, button {
+        select, button, input[type="file"] {
             padding: 8px;
             border-radius: 4px;
             border: 1px solid #bdc3c7;
@@ -57,19 +74,25 @@
             border: none;
             cursor: pointer;
             transition: background-color 0.3s;
-            margin-left: 10px;
+            margin-right: 10px;
+            padding: 8px 15px;
+        }
+        
+        .primary-btn {
+            background-color: #2ecc71;
         }
         
         button:hover {
             background-color: #2980b9;
         }
         
+        .primary-btn:hover {
+            background-color: #27ae60;
+        }
+        
         .table-container {
             overflow-x: auto;
             margin-bottom: 30px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: 5px;
-            background-color: white;
         }
         
         table {
@@ -120,17 +143,81 @@
             background-color: #e5f7fd;
         }
         
-        .additional-info {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
         .best-value {
             background-color: #e8f8f5;
             border-left: 4px solid #27ae60;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-bottom: 10px;
+        }
+        
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            border-radius: 0;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 16px;
+            color: #333;
+            margin: 0;
+        }
+        
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        
+        .tab button.active {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            background-color: white;
+        }
+        
+        .helper-text {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .sample-data {
+            font-size: 0.8em;
+            color: #7f8c8d;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 5px;
+            display: inline-block;
+        }
+        
+        .hidden {
+            display: none;
         }
         
         footer {
@@ -138,6 +225,14 @@
             margin-top: 40px;
             font-size: 0.9em;
             color: #7f8c8d;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .export-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
         }
         
         @media (max-width: 768px) {
@@ -145,340 +240,723 @@
                 display: block;
                 margin-bottom: 15px;
             }
+            
+            .tab button {
+                float: none;
+                display: block;
+                width: 100%;
+                text-align: left;
+            }
         }
     </style>
 </head>
 <body>
     <h1>Glass Jar Packaging Price Comparison</h1>
     
-    <div class="filter-controls">
-        <div class="filter-group">
-            <label for="jar-type">Jar Type:</label>
-            <select id="jar-type">
-                <option value="all">All Types</option>
-                <option value="Mason">Mason</option>
-                <option value="Hexagon">Hexagon</option>
-                <option value="Round">Round</option>
-                <option value="Square">Square</option>
-            </select>
+    <div class="section">
+        <h2>Load Your Price Data</h2>
+        <p>Choose how to load your glass jar pricing data:</p>
+        
+        <div class="tab-container">
+            <div class="tab">
+                <button class="tablinks active" onclick="openTab(event, 'file-upload')">Upload CSV File</button>
+                <button class="tablinks" onclick="openTab(event, 'manual-entry')">Enter Data Manually</button>
+                <button class="tablinks" onclick="openTab(event, 'paste-data')">Paste Data</button>
+            </div>
+            
+            <div id="file-upload" class="tabcontent" style="display: block;">
+                <p>Upload a CSV file with your jar pricing data:</p>
+                <input type="file" id="csv-file" accept=".csv">
+                <p class="helper-text">Your CSV should include columns for: Jar Type, Size (oz), Base Price, Bulk Price, Minimum Order, and Supplier</p>
+                <a href="#" class="sample-data" onclick="downloadSampleCSV()">Download Sample CSV Template</a>
+                <div class="button-container" style="margin-top: 15px;">
+                    <button onclick="loadCSV()" class="primary-btn">Load Data from CSV</button>
+                </div>
+            </div>
+            
+            <div id="manual-entry" class="tabcontent">
+                <p>Enter your data into the table below:</p>
+                <div class="table-container">
+                    <table id="data-entry-table">
+                        <thead>
+                            <tr>
+                                <th>Jar Type</th>
+                                <th>Size (oz)</th>
+                                <th>Base Price ($)</th>
+                                <th>Bulk Price ($)</th>
+                                <th>Minimum Order</th>
+                                <th>Supplier</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" class="jar-type" placeholder="e.g. Mason"></td>
+                                <td><input type="number" class="jar-size" placeholder="e.g. 8"></td>
+                                <td><input type="number" step="0.01" class="base-price" placeholder="e.g. 1.10"></td>
+                                <td><input type="number" step="0.01" class="bulk-price" placeholder="e.g. 0.78"></td>
+                                <td><input type="number" class="min-order" placeholder="e.g. 100"></td>
+                                <td><input type="text" class="supplier" placeholder="e.g. GlassCraft"></td>
+                                <td><button onclick="removeRow(this)">Remove</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="button-container" style="margin-top: 15px;">
+                    <button onclick="addRow()">Add Row</button>
+                    <button onclick="loadManualData()" class="primary-btn">Load Data</button>
+                </div>
+                <a href="#" class="sample-data" onclick="loadSampleData()">Load Sample Data</a>
+            </div>
+            
+            <div id="paste-data" class="tabcontent">
+                <p>Paste your data in CSV or JSON format:</p>
+                <textarea id="paste-area" placeholder="Paste your data here in CSV format (with headers) or JSON format"></textarea>
+                <div class="button-container">
+                    <button onclick="detectAndLoadPastedData()" class="primary-btn">Parse and Load Data</button>
+                </div>
+                <p class="helper-text">CSV Format Example: Jar Type,Size,Base Price,Bulk Price,Min Order,Supplier<br>Mason,8,1.10,0.78,100,GlassCraft</p>
+                <a href="#" class="sample-data" onclick="loadSamplePasteData()">Load Sample Data Format</a>
+            </div>
+        </div>
+    </div>
+    
+    <div id="comparison-section" class="hidden">
+        <div class="filter-controls">
+            <div class="filter-group">
+                <label for="jar-type">Jar Type:</label>
+                <select id="jar-type">
+                    <option value="all">All Types</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="jar-size">Size:</label>
+                <select id="jar-size">
+                    <option value="all">All Sizes</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="supplier">Supplier:</label>
+                <select id="supplier">
+                    <option value="all">All Suppliers</option>
+                </select>
+            </div>
+            
+            <button id="highlight-best-value">Highlight Best Value</button>
+            <button id="reset-filters">Reset Filters</button>
         </div>
         
-        <div class="filter-group">
-            <label for="jar-size">Size:</label>
-            <select id="jar-size">
-                <option value="all">All Sizes</option>
-                <option value="4 oz">4 oz</option>
-                <option value="8 oz">8 oz</option>
-                <option value="16 oz">16 oz</option>
-            </select>
+        <div class="section">
+            <h2>Price Comparison Table</h2>
+            <div class="table-container">
+                <table id="jar-table">
+                    <thead>
+                        <tr>
+                            <th data-sort="jar-type">Jar Type</th>
+                            <th data-sort="size">Size (oz)</th>
+                            <th data-sort="base-price">Base Price ($)</th>
+                            <th data-sort="bulk-price">Bulk Price ($)</th>
+                            <th data-sort="min-order">Minimum Order</th>
+                            <th data-sort="supplier">Supplier</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="export-section">
+                <button onclick="exportToCSV()">Export to CSV</button>
+                <button onclick="printTable()">Print Table</button>
+                <button onclick="saveDataLocally()">Save Data for Later</button>
+            </div>
         </div>
         
-        <div class="filter-group">
-            <label for="supplier">Supplier:</label>
-            <select id="supplier">
-                <option value="all">All Suppliers</option>
-                <option value="GlassCraft">GlassCraft</option>
-                <option value="JarWorld">JarWorld</option>
-                <option value="GlassPlus">GlassPlus</option>
-                <option value="PremiumGlass">PremiumGlass</option>
-            </select>
+        <div class="section">
+            <h2>Cost Analysis</h2>
+            <div id="cost-analysis">
+                <!-- Analysis will be generated here -->
+            </div>
         </div>
-        
-        <button id="highlight-best-value">Highlight Best Value</button>
-        <button id="reset-filters">Reset All</button>
-    </div>
-    
-    <div class="table-container">
-        <table id="jar-table">
-            <thead>
-                <tr>
-                    <th data-sort="jar-type">Jar Type</th>
-                    <th data-sort="size">Size (oz)</th>
-                    <th data-sort="base-price">Base Price ($)</th>
-                    <th data-sort="bulk-price">Bulk Price ($)</th>
-                    <th data-sort="min-order">Minimum Order</th>
-                    <th data-sort="supplier">Supplier</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Mason</td>
-                    <td>4</td>
-                    <td>0.85</td>
-                    <td>0.62</td>
-                    <td>100</td>
-                    <td>GlassCraft</td>
-                </tr>
-                <tr>
-                    <td>Mason</td>
-                    <td>8</td>
-                    <td>1.10</td>
-                    <td>0.78</td>
-                    <td>100</td>
-                    <td>GlassCraft</td>
-                </tr>
-                <tr>
-                    <td>Mason</td>
-                    <td>16</td>
-                    <td>1.45</td>
-                    <td>0.95</td>
-                    <td>100</td>
-                    <td>GlassCraft</td>
-                </tr>
-                <tr>
-                    <td>Hexagon</td>
-                    <td>4</td>
-                    <td>1.15</td>
-                    <td>0.85</td>
-                    <td>250</td>
-                    <td>JarWorld</td>
-                </tr>
-                <tr>
-                    <td>Hexagon</td>
-                    <td>8</td>
-                    <td>1.40</td>
-                    <td>1.05</td>
-                    <td>250</td>
-                    <td>JarWorld</td>
-                </tr>
-                <tr>
-                    <td>Round</td>
-                    <td>4</td>
-                    <td>0.75</td>
-                    <td>0.58</td>
-                    <td>100</td>
-                    <td>GlassPlus</td>
-                </tr>
-                <tr>
-                    <td>Round</td>
-                    <td>8</td>
-                    <td>0.95</td>
-                    <td>0.72</td>
-                    <td>100</td>
-                    <td>GlassPlus</td>
-                </tr>
-                <tr>
-                    <td>Round</td>
-                    <td>16</td>
-                    <td>1.25</td>
-                    <td>0.88</td>
-                    <td>100</td>
-                    <td>GlassPlus</td>
-                </tr>
-                <tr>
-                    <td>Square</td>
-                    <td>8</td>
-                    <td>1.35</td>
-                    <td>0.98</td>
-                    <td>150</td>
-                    <td>PremiumGlass</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    
-    <div class="additional-info">
-        <h2>Additional Cost Considerations</h2>
-        <table id="addon-table">
-            <thead>
-                <tr>
-                    <th>Add-on Feature</th>
-                    <th>Additional Cost (per unit)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Custom Labels</td>
-                    <td>$0.15 - $0.45</td>
-                </tr>
-                <tr>
-                    <td>Metal Lids</td>
-                    <td>$0.12 - $0.30</td>
-                </tr>
-                <tr>
-                    <td>Foam Inserts</td>
-                    <td>$0.08 - $0.20</td>
-                </tr>
-                <tr>
-                    <td>Gift Packaging</td>
-                    <td>$0.25 - $0.75</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    
-    <div class="additional-info">
-        <h2>Supplier Lead Times</h2>
-        <table id="lead-time-table">
-            <thead>
-                <tr>
-                    <th>Supplier</th>
-                    <th>Standard Order</th>
-                    <th>Rush Order</th>
-                    <th>Rush Fee</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>GlassCraft</td>
-                    <td>7-10 days</td>
-                    <td>3-5 days</td>
-                    <td>+15%</td>
-                </tr>
-                <tr>
-                    <td>JarWorld</td>
-                    <td>10-14 days</td>
-                    <td>5-7 days</td>
-                    <td>+20%</td>
-                </tr>
-                <tr>
-                    <td>GlassPlus</td>
-                    <td>5-7 days</td>
-                    <td>2-3 days</td>
-                    <td>+25%</td>
-                </tr>
-                <tr>
-                    <td>PremiumGlass</td>
-                    <td>12-15 days</td>
-                    <td>7-10 days</td>
-                    <td>+10%</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    
-    <div class="additional-info">
-        <h2>Cost Comparison Analysis</h2>
-        <p>The Round jar style from GlassPlus offers the lowest base price across all size categories, with an average savings of 18% compared to Mason jars and 32% compared to specialty shapes like Hexagon and Square.</p>
-        <p>For orders exceeding 1000 units, bulk discounts range from 25-30% off base prices, with GlassPlus offering the most competitive bulk rates for standard shapes.</p>
     </div>
     
     <footer>
-        <p>Last updated: March 2025 | Contact purchasing@company.com for more information</p>
+        <p>Glass Jar Pricing Tool - For internal use only</p>
+        <p>Data is stored locally in your browser and is not sent to any server</p>
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get reference to elements
-            const jarTable = document.getElementById('jar-table');
-            const jarTypeFilter = document.getElementById('jar-type');
-            const jarSizeFilter = document.getElementById('jar-size');
-            const supplierFilter = document.getElementById('supplier');
-            const resetButton = document.getElementById('reset-filters');
-            const bestValueButton = document.getElementById('highlight-best-value');
-            const tableRows = jarTable.querySelectorAll('tbody tr');
-            
-            // Sorting functionality
-            const headers = jarTable.querySelectorAll('th[data-sort]');
-            headers.forEach(header => {
-                header.addEventListener('click', function() {
-                    const sortBy = this.dataset.sort;
-                    const isAsc = this.classList.contains('asc');
-                    
-                    // Reset all headers
-                    headers.forEach(h => {
-                        h.classList.remove('asc', 'desc');
-                    });
-                    
-                    // Set new sort direction
-                    this.classList.add(isAsc ? 'desc' : 'asc');
-                    
-                    // Get all rows and convert to array for sorting
-                    const rows = Array.from(tableRows);
-                    
-                    // Sort rows
-                    rows.sort((a, b) => {
-                        let aVal, bVal;
-                        
-                        if (sortBy === 'jar-type' || sortBy === 'supplier') {
-                            // Sort text
-                            const colIndex = Array.from(headers).findIndex(h => h.dataset.sort === sortBy);
-                            aVal = a.cells[colIndex].textContent;
-                            bVal = b.cells[colIndex].textContent;
-                            return isAsc ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
-                        } else {
-                            // Sort numbers
-                            const colIndex = Array.from(headers).findIndex(h => h.dataset.sort === sortBy);
-                            aVal = parseFloat(a.cells[colIndex].textContent);
-                            bVal = parseFloat(b.cells[colIndex].textContent);
-                            return isAsc ? bVal - aVal : aVal - bVal;
-                        }
-                    });
-                    
-                    // Reorder table body
-                    const tbody = jarTable.querySelector('tbody');
-                    rows.forEach(row => {
-                        tbody.appendChild(row);
-                    });
-                });
-            });
-            
-            // Filtering functionality
-            function applyFilters() {
-                const jarType = jarTypeFilter.value;
-                const jarSize = jarSizeFilter.value;
-                const supplier = supplierFilter.value;
-                
-                tableRows.forEach(row => {
-                    const rowJarType = row.cells[0].textContent;
-                    const rowSize = row.cells[1].textContent + ' oz';
-                    const rowSupplier = row.cells[5].textContent;
-                    
-                    const jarTypeMatch = jarType === 'all' || rowJarType === jarType;
-                    const sizeMatch = jarSize === 'all' || rowSize === jarSize;
-                    const supplierMatch = supplier === 'all' || rowSupplier === supplier;
-                    
-                    if (jarTypeMatch && sizeMatch && supplierMatch) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
+        // Data storage
+        let jarData = [];
+        
+        // Tab functionality
+        function openTab(evt, tabName) {
+            const tabcontent = document.getElementsByClassName("tabcontent");
+            for (let i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
             }
             
-            // Event listeners for filters
-            jarTypeFilter.addEventListener('change', applyFilters);
-            jarSizeFilter.addEventListener('change', applyFilters);
-            supplierFilter.addEventListener('change', applyFilters);
+            const tablinks = document.getElementsByClassName("tablinks");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
             
-            // Reset all filters
-            resetButton.addEventListener('click', function() {
-                jarTypeFilter.value = 'all';
-                jarSizeFilter.value = 'all';
-                supplierFilter.value = 'all';
-                
-                tableRows.forEach(row => {
-                    row.style.display = '';
-                    row.classList.remove('highlight', 'best-value');
-                });
-            });
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+        
+        // CSV File handling
+        function loadCSV() {
+            const fileInput = document.getElementById('csv-file');
+            if (!fileInput.files.length) {
+                alert('Please select a CSV file to upload.');
+                return;
+            }
             
-            // Highlight best value
-            bestValueButton.addEventListener('click', function() {
-                // Reset highlights
-                tableRows.forEach(row => {
-                    row.classList.remove('highlight', 'best-value');
-                });
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const content = e.target.result;
+                try {
+                    jarData = parseCSV(content);
+                    renderTable();
+                    showComparisonSection();
+                } catch (error) {
+                    alert('Error parsing CSV: ' + error.message);
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        function parseCSV(csv) {
+            const lines = csv.split('\n');
+            const result = [];
+            const headers = lines[0].split(',').map(header => header.trim());
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
                 
-                // Get visible rows after filtering
-                const visibleRows = Array.from(tableRows).filter(row => row.style.display !== 'none');
+                const values = lines[i].split(',');
+                const row = {};
                 
-                // Find best value (lowest price) for each size
-                const sizeGroups = {};
-                visibleRows.forEach(row => {
-                    const size = row.cells[1].textContent;
-                    const price = parseFloat(row.cells[2].textContent);
+                for (let j = 0; j < headers.length; j++) {
+                    let value = values[j] ? values[j].trim() : '';
                     
-                    if (!sizeGroups[size] || price < sizeGroups[size].price) {
-                        sizeGroups[size] = { row, price };
+                    // Convert numeric values
+                    if (['Size', 'Base Price', 'Bulk Price', 'Minimum Order'].includes(headers[j])) {
+                        value = parseFloat(value) || 0;
                     }
-                });
+                    
+                    const key = headers[j].replace(/ /g, '').toLowerCase();
+                    row[key] = value;
+                }
                 
-                // Highlight best values
-                Object.values(sizeGroups).forEach(item => {
-                    item.row.classList.add('best-value');
+                result.push(row);
+            }
+            
+            return result;
+        }
+        
+        // Manual data entry
+        function addRow() {
+            const tbody = document.querySelector('#data-entry-table tbody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="text" class="jar-type" placeholder="e.g. Mason"></td>
+                <td><input type="number" class="jar-size" placeholder="e.g. 8"></td>
+                <td><input type="number" step="0.01" class="base-price" placeholder="e.g. 1.10"></td>
+                <td><input type="number" step="0.01" class="bulk-price" placeholder="e.g. 0.78"></td>
+                <td><input type="number" class="min-order" placeholder="e.g. 100"></td>
+                <td><input type="text" class="supplier" placeholder="e.g. GlassCraft"></td>
+                <td><button onclick="removeRow(this)">Remove</button></td>
+            `;
+            tbody.appendChild(newRow);
+        }
+        
+        function removeRow(button) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+        
+        function loadManualData() {
+            const rows = document.querySelectorAll('#data-entry-table tbody tr');
+            jarData = [];
+            
+            rows.forEach(row => {
+                const jarType = row.querySelector('.jar-type').value.trim();
+                const size = parseFloat(row.querySelector('.jar-size').value);
+                const basePrice = parseFloat(row.querySelector('.base-price').value);
+                const bulkPrice = parseFloat(row.querySelector('.bulk-price').value);
+                const minOrder = parseFloat(row.querySelector('.min-order').value);
+                const supplier = row.querySelector('.supplier').value.trim();
+                
+                if (jarType && !isNaN(size) && !isNaN(basePrice)) {
+                    jarData.push({
+                        jartype: jarType,
+                        size: size,
+                        baseprice: basePrice,
+                        bulkprice: bulkPrice || 0,
+                        minimumorder: minOrder || 0,
+                        supplier: supplier
+                    });
+                }
+            });
+            
+            if (jarData.length === 0) {
+                alert('Please enter at least one valid row of data.');
+                return;
+            }
+            
+            renderTable();
+            showComparisonSection();
+        }
+        
+        function loadSampleData() {
+            document.querySelector('#data-entry-table tbody').innerHTML = '';
+            
+            const sampleData = [
+                {jartype: 'Mason', size: 4, baseprice: 0.85, bulkprice: 0.62, minimumorder: 100, supplier: 'Supplier A'},
+                {jartype: 'Mason', size: 8, baseprice: 1.10, bulkprice: 0.78, minimumorder: 100, supplier: 'Supplier A'},
+                {jartype: 'Round', size: 4, baseprice: 0.75, bulkprice: 0.58, minimumorder: 100, supplier: 'Supplier B'},
+                {jartype: 'Round', size: 8, baseprice: 0.95, bulkprice: 0.72, minimumorder: 100, supplier: 'Supplier B'},
+                {jartype: 'Hexagon', size: 8, baseprice: 1.40, bulkprice: 1.05, minimumorder: 250, supplier: 'Supplier C'}
+            ];
+            
+            sampleData.forEach(item => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td><input type="text" class="jar-type" value="${item.jartype}"></td>
+                    <td><input type="number" class="jar-size" value="${item.size}"></td>
+                    <td><input type="number" step="0.01" class="base-price" value="${item.baseprice}"></td>
+                    <td><input type="number" step="0.01" class="bulk-price" value="${item.bulkprice}"></td>
+                    <td><input type="number" class="min-order" value="${item.minimumorder}"></td>
+                    <td><input type="text" class="supplier" value="${item.supplier}"></td>
+                    <td><button onclick="removeRow(this)">Remove</button></td>
+                `;
+                document.querySelector('#data-entry-table tbody').appendChild(newRow);
+            });
+        }
+        
+        // Paste data handling
+        function detectAndLoadPastedData() {
+            const pasteContent = document.getElementById('paste-area').value.trim();
+            if (!pasteContent) {
+                alert('Please paste data before loading.');
+                return;
+            }
+            
+            try {
+                // Try to parse as JSON first
+                if (pasteContent.startsWith('[') || pasteContent.startsWith('{')) {
+                    jarData = JSON.parse(pasteContent);
+                    
+                    // Handle object structure differences
+                    jarData = jarData.map(item => {
+                        const normalized = {};
+                        
+                        // Map various possible key names to our standard keys
+                        for (const [key, value] of Object.entries(item)) {
+                            const lowerKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+                            
+                            if (lowerKey.includes('type') || lowerKey.includes('jar')) normalized.jartype = value;
+                            else if (lowerKey.includes('size')) normalized.size = parseFloat(value);
+                            else if (lowerKey.includes('base') || (lowerKey.includes('price') && !lowerKey.includes('bulk'))) normalized.baseprice = parseFloat(value);
+                            else if (lowerKey.includes('bulk')) normalized.bulkprice = parseFloat(value);
+                            else if (lowerKey.includes('min') || lowerKey.includes('order')) normalized.minimumorder = parseFloat(value);
+                            else if (lowerKey.includes('supplier') || lowerKey.includes('vendor')) normalized.supplier = value;
+                            else normalized[lowerKey] = value; // Keep other fields
+                        }
+                        
+                        return normalized;
+                    });
+                } else {
+                    // Parse as CSV
+                    jarData = parseCSV(pasteContent);
+                }
+                
+                renderTable();
+                showComparisonSection();
+            } catch (error) {
+                alert('Error parsing data: ' + error.message + '. Please check the format and try again.');
+            }
+        }
+        
+        function loadSamplePasteData() {
+            document.getElementById('paste-area').value = 
+`Jar Type,Size,Base Price,Bulk Price,Minimum Order,Supplier
+Mason,4,0.85,0.62,100,Supplier A
+Mason,8,1.10,0.78,100,Supplier A
+Round,4,0.75,0.58,100,Supplier B
+Round,8,0.95,0.72,100,Supplier B
+Hexagon,8,1.40,1.05,250,Supplier C`;
+        }
+        
+        // Sample CSV download
+        function downloadSampleCSV() {
+            const csvContent = 
+`Jar Type,Size,Base Price,Bulk Price,Minimum Order,Supplier
+Mason,4,0.85,0.62,100,Supplier A
+Mason,8,1.10,0.78,100,Supplier A
+Round,4,0.75,0.58,100,Supplier B
+Round,8,0.95,0.72,100,Supplier B
+Hexagon,8,1.40,1.05,250,Supplier C`;
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'sample_jar_data.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Display functionality
+        function showComparisonSection() {
+            document.getElementById('comparison-section').classList.remove('hidden');
+            document.querySelector('.filter-controls').style.display = 'block';
+            populateFilterOptions();
+            generateAnalysis();
+            
+            // Add event listeners for filtering and sorting
+            document.getElementById('jar-type').addEventListener('change', filterTable);
+            document.getElementById('jar-size').addEventListener('change', filterTable);
+            document.getElementById('supplier').addEventListener('change', filterTable);
+            document.getElementById('reset-filters').addEventListener('click', resetFilters);
+            document.getElementById('highlight-best-value').addEventListener('click', highlightBestValues);
+            
+            const headers = document.querySelectorAll('#jar-table th[data-sort]');
+            headers.forEach(header => {
+                header.addEventListener('click', function() {
+                    sortTable(this.dataset.sort);
                 });
             });
+            
+            // Scroll to the comparison section
+            document.getElementById('comparison-section').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+        
+        function renderTable() {
+            const tbody = document.querySelector('#jar-table tbody');
+            tbody.innerHTML = '';
+            
+            jarData.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.jartype || ''}</td>
+                    <td>${item.size || 0}</td>
+                    <td>${(item.baseprice || 0).toFixed(2)}</td>
+                    <td>${(item.bulkprice || 0).toFixed(2)}</td>
+                    <td>${item.minimumorder || 0}</td>
+                    <td>${item.supplier || ''}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function populateFilterOptions() {
+            const jarTypes = new Set();
+            const sizes = new Set();
+            const suppliers = new Set();
+            
+            jarData.forEach(item => {
+                if (item.jartype) jarTypes.add(item.jartype);
+                if (item.size) sizes.add(item.size);
+                if (item.supplier) suppliers.add(item.supplier);
+            });
+            
+            const jarTypeSelect = document.getElementById('jar-type');
+            const jarSizeSelect = document.getElementById('jar-size');
+            const supplierSelect = document.getElementById('supplier');
+            
+            // Clear existing options except the first one
+            jarTypeSelect.innerHTML = '<option value="all">All Types</option>';
+            jarSizeSelect.innerHTML = '<option value="all">All Sizes</option>';
+            supplierSelect.innerHTML = '<option value="all">All Suppliers</option>';
+            
+            // Add new options
+            jarTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                jarTypeSelect.appendChild(option);
+            });
+            
+            sizes.forEach(size => {
+                const option = document.createElement('option');
+                option.value = size;
+                option.textContent = `${size} oz`;
+                jarSizeSelect.appendChild(option);
+            });
+            
+            suppliers.forEach(supplier => {
+                const option = document.createElement('option');
+                option.value = supplier;
+                option.textContent = supplier;
+                supplierSelect.appendChild(option);
+            });
+        }
+        
+        // Filtering and sorting
+        function filterTable() {
+            const jarType = document.getElementById('jar-type').value;
+            const jarSize = parseFloat(document.getElementById('jar-size').value);
+            const supplier = document.getElementById('supplier').value;
+            
+            const rows = document.querySelectorAll('#jar-table tbody tr');
+            
+            rows.forEach(row => {
+                const rowJarType = row.cells[0].textContent;
+                const rowSize = parseFloat(row.cells[1].textContent);
+                const rowSupplier = row.cells[5].textContent;
+                
+                const jarTypeMatch = jarType === 'all' || rowJarType === jarType;
+                const sizeMatch = isNaN(jarSize) || rowSize === jarSize;
+                const supplierMatch = supplier === 'all' || rowSupplier === supplier;
+                
+                if (jarTypeMatch && sizeMatch && supplierMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        function resetFilters() {
+            document.getElementById('jar-type').value = 'all';
+            document.getElementById('jar-size').value = 'all';
+            document.getElementById('supplier').value = 'all';
+            
+            const rows = document.querySelectorAll('#jar-table tbody tr');
+            rows.forEach(row => {
+                row.style.display = '';
+                row.classList.remove('highlight', 'best-value');
+            });
+        }
+        
+        function sortTable(sortBy) {
+            const header = document.querySelector(`th[data-sort="${sortBy}"]`);
+            const isAsc = header.classList.contains('asc');
+            
+            // Reset all headers
+            document.querySelectorAll('th[data-sort]').forEach(h => {
+                h.classList.remove('asc', 'desc');
+            });
+            
+            // Set new sort direction
+            header.classList.add(isAsc ? 'desc' : 'asc');
+            
+            const tbody = document.querySelector('#jar-table tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            // Map sortBy to column index
+            const columnMap = {
+                'jar-type': 0,
+                'size': 1,
+                'base-price': 2,
+                'bulk-price': 3,
+                'min-order': 4,
+                'supplier': 5
+            };
+            
+            const columnIndex = columnMap[sortBy];
+            
+            rows.sort((a, b) => {
+                let aVal = a.cells[columnIndex].textContent;
+                let bVal = b.cells[columnIndex].textContent;
+                
+                // Convert to numbers for numeric columns
+                if ([1, 2, 3, 4].includes(columnIndex)) {
+                    aVal = parseFloat(aVal);
+                    bVal = parseFloat(bVal);
+                    return isAsc ? bVal - aVal : aVal - bVal;
+                } else {
+                    return isAsc ? 
+                        bVal.localeCompare(aVal) : 
+                        aVal.localeCompare(bVal);
+                }
+            });
+            
+            // Reorder rows
+            rows.forEach(row => tbody.appendChild(row));
+        }
+        
+        function highlightBestValues() {
+            // Remove existing highlights
+            document.querySelectorAll('#jar-table tbody tr').forEach(row => {
+                row.classList.remove('best-value');
+            });
+            
+            // Get visible rows
+            const visibleRows = Array.from(document.querySelectorAll('#jar-table tbody tr'))
+                .filter(row => row.style.display !== 'none');
+            
+            // Group by size
+            const sizeGroups = {};
+            visibleRows.forEach(row => {
+                const size = row.cells[1].textContent;
+                const basePrice = parseFloat(row.cells[2].textContent);
+                
+                if (!sizeGroups[size] || basePrice < sizeGroups[size].price) {
+                    sizeGroups[size] = { row, price: basePrice };
+                }
+            });
+            
+            // Highlight best values
+            Object.values(sizeGroups).forEach(item => {
+                item.row.classList.add('best-value');
+            });
+        }
+        
+        // Analysis generation
+        function generateAnalysis() {
+            const analysisDiv = document.getElementById('cost-analysis');
+            
+            // Find lowest price jar in each category
+            const jarTypeGroups = {};
+            jarData.forEach(item => {
+                if (!jarTypeGroups[item.jartype]) {
+                    jarTypeGroups[item.jartype] = [];
+                }
+                jarTypeGroups[item.jartype].push(item);
+            });
+            
+            let lowestOverall = { baseprice: Number.MAX_VALUE };
+            let lowestBySize = {};
+            
+            jarData.forEach(item => {
+                if (item.baseprice < lowestOverall.baseprice) {
+                    lowestOverall = item;
+                }
+                
+                const sizeKey = item.size;
+                if (!lowestBySize[sizeKey] || item.baseprice < lowestBySize[sizeKey].baseprice) {
+                    lowestBySize[sizeKey] = item;
+                }
+            });
+            
+            // Calculate price differences
+            const avgBasePrices = {};
+            Object.entries(jarTypeGroups).forEach(([type, items]) => {
+                avgBasePrices[type] = items.reduce((sum, item) => sum + item.baseprice, 0) / items.length;
+            });
+            
+            // Build analysis HTML
+            let analysisHTML = `
+                <h3>Price Analysis Summary</h3>
+                <p><strong>Lowest overall price:</strong> ${lowestOverall.jartype} (${lowestOverall.size} oz) at $${lowestOverall.baseprice.toFixed(2)} from ${lowestOverall.supplier}</p>
+                
+                <h4>Best Value by Size:</h4>
+                <ul>
+            `;
+            
+            Object.entries(lowestBySize).sort((a, b) => a[0] - b[0]).forEach(([size, item]) => {
+                analysisHTML += `<li><strong>${size} oz:</strong> ${item.jartype} at $${item.baseprice.toFixed(2)} from ${item.supplier}</li>`;
+            });
+            
+            analysisHTML += `
+                </ul>
+                
+                <h4>Average Price Comparison:</h4>
+                <ul>
+            `;
+            
+            // Sort by price from lowest to highest
+            const sortedTypes = Object.entries(avgBasePrices).sort((a, b) => a[1] - b[1]);
+            
+            sortedTypes.forEach(([type, avgPrice], index) => {
+                if (index === 0) {
+                    analysisHTML += `<li><strong>${type}:</strong> $${avgPrice.toFixed(2)} (Best overall average)</li>`;
+                } else {
+                    const priceDiff = ((avgPrice / sortedTypes[0][1]) - 1) * 100;
+                    analysisHTML += `<li><strong>${type}:</strong> $${avgPrice.toFixed(2)} (${priceDiff.toFixed(1)}% more expensive than ${sortedTypes[0][0]})</li>`;
+                }
+            });
+            
+            analysisHTML += `
+                </ul>
+                
+                <h4>Bulk Order Savings:</h4>
+                <p>Average savings when ordering in bulk: ${calculateAvgBulkSavings().toFixed(1)}%</p>
+            `;
+            
+            analysisDiv.innerHTML = analysisHTML;
+        }
+        
+        function calculateAvgBulkSavings() {
+            let totalSavingsPercent = 0;
+            let count = 0;
+            
+            jarData.forEach(item => {
+                if (item.baseprice && item.bulkprice && item.bulkprice > 0) {
+                    const savingsPercent = ((item.baseprice - item.bulkprice) / item.baseprice) * 100;
+                    totalSavingsPercent += savingsPercent;
+                    count++;
+                }
+            });
+            
+            return count > 0 ? totalSavingsPercent / count : 0;
+        }
+        
+        // Export and save functionality
+        function exportToCSV() {
+            // Create CSV content
+            let csvContent = 'Jar Type,Size,Base Price,Bulk Price,Minimum Order,Supplier\n';
+            
+            jarData.forEach(item => {
+                csvContent += `${item.jartype || ''},${item.size || 0},${item.baseprice || 0},${item.bulkprice || 0},${item.minimumorder || 0},${item.supplier || ''}\n`;
+            });
+            
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            const date = new Date().toISOString().slice(0, 10);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `jar_comparison_${date}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function printTable() {
+            window.print();
+        }
+        
+        function saveDataLocally() {
+            try {
+                localStorage.setItem('jarPricingData', JSON.stringify(jarData));
+                alert('Data saved successfully! It will be available next time you open this page.');
+            } catch (error) {
+                alert('Error saving data: ' + error.message);
+            }
+        }
+        
+        // Check for saved data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const savedData = localStorage.getItem('jarPricingData');
+                if (savedData) {
+                    const shouldLoad = confirm('Found previously saved pricing data. Would you like to load it?');
+                    if (shouldLoad) {
+                        jarData = JSON.parse(savedData);
+                        renderTable();
+                        showComparisonSection();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading saved data:', error);
+            }
         });
     </script>
 </body>
