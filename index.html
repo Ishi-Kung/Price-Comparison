@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glass Jar Packaging Price Comparison</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1, h2 {
+            color: #2c3e50;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .filter-controls {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .filter-group {
+            display: inline-block;
+            margin-right: 25px;
+            margin-bottom: 10px;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        select, button {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #bdc3c7;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            background-color: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        th:hover {
+            background-color: #2980b9;
+        }
+        
+        th::after {
+            content: "↕";
+            position: absolute;
+            right: 8px;
+            opacity: 0.5;
+        }
+        
+        th.asc::after {
+            content: "↑";
+            opacity: 1;
+        }
+        
+        th.desc::after {
+            content: "↓";
+            opacity: 1;
+        }
+        
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .highlight {
+            background-color: #e5f7fd;
+        }
+        
+        .additional-info {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .best-value {
+            background-color: #e8f8f5;
+            border-left: 4px solid #27ae60;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-group {
+                display: block;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Glass Jar Packaging Price Comparison</h1>
+    
+    <div class="filter-controls">
+        <div class="filter-group">
+            <label for="jar-type">Jar Type:</label>
+            <select id="jar-type">
+                <option value="all">All Types</option>
+                <option value="Mason">Mason</option>
+                <option value="Hexagon">Hexagon</option>
+                <option value="Round">Round</option>
+                <option value="Square">Square</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="jar-size">Size:</label>
+            <select id="jar-size">
+                <option value="all">All Sizes</option>
+                <option value="4 oz">4 oz</option>
+                <option value="8 oz">8 oz</option>
+                <option value="16 oz">16 oz</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="supplier">Supplier:</label>
+            <select id="supplier">
+                <option value="all">All Suppliers</option>
+                <option value="GlassCraft">GlassCraft</option>
+                <option value="JarWorld">JarWorld</option>
+                <option value="GlassPlus">GlassPlus</option>
+                <option value="PremiumGlass">PremiumGlass</option>
+            </select>
+        </div>
+        
+        <button id="highlight-best-value">Highlight Best Value</button>
+        <button id="reset-filters">Reset All</button>
+    </div>
+    
+    <div class="table-container">
+        <table id="jar-table">
+            <thead>
+                <tr>
+                    <th data-sort="jar-type">Jar Type</th>
+                    <th data-sort="size">Size (oz)</th>
+                    <th data-sort="base-price">Base Price ($)</th>
+                    <th data-sort="bulk-price">Bulk Price ($)</th>
+                    <th data-sort="min-order">Minimum Order</th>
+                    <th data-sort="supplier">Supplier</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Mason</td>
+                    <td>4</td>
+                    <td>0.85</td>
+                    <td>0.62</td>
+                    <td>100</td>
+                    <td>GlassCraft</td>
+                </tr>
+                <tr>
+                    <td>Mason</td>
+                    <td>8</td>
+                    <td>1.10</td>
+                    <td>0.78</td>
+                    <td>100</td>
+                    <td>GlassCraft</td>
+                </tr>
+                <tr>
+                    <td>Mason</td>
+                    <td>16</td>
+                    <td>1.45</td>
+                    <td>0.95</td>
+                    <td>100</td>
+                    <td>GlassCraft</td>
+                </tr>
+                <tr>
+                    <td>Hexagon</td>
+                    <td>4</td>
+                    <td>1.15</td>
+                    <td>0.85</td>
+                    <td>250</td>
+                    <td>JarWorld</td>
+                </tr>
+                <tr>
+                    <td>Hexagon</td>
+                    <td>8</td>
+                    <td>1.40</td>
+                    <td>1.05</td>
+                    <td>250</td>
+                    <td>JarWorld</td>
+                </tr>
+                <tr>
+                    <td>Round</td>
+                    <td>4</td>
+                    <td>0.75</td>
+                    <td>0.58</td>
+                    <td>100</td>
+                    <td>GlassPlus</td>
+                </tr>
+                <tr>
+                    <td>Round</td>
+                    <td>8</td>
+                    <td>0.95</td>
+                    <td>0.72</td>
+                    <td>100</td>
+                    <td>GlassPlus</td>
+                </tr>
+                <tr>
+                    <td>Round</td>
+                    <td>16</td>
+                    <td>1.25</td>
+                    <td>0.88</td>
+                    <td>100</td>
+                    <td>GlassPlus</td>
+                </tr>
+                <tr>
+                    <td>Square</td>
+                    <td>8</td>
+                    <td>1.35</td>
+                    <td>0.98</td>
+                    <td>150</td>
+                    <td>PremiumGlass</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="additional-info">
+        <h2>Additional Cost Considerations</h2>
+        <table id="addon-table">
+            <thead>
+                <tr>
+                    <th>Add-on Feature</th>
+                    <th>Additional Cost (per unit)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Custom Labels</td>
+                    <td>$0.15 - $0.45</td>
+                </tr>
+                <tr>
+                    <td>Metal Lids</td>
+                    <td>$0.12 - $0.30</td>
+                </tr>
+                <tr>
+                    <td>Foam Inserts</td>
+                    <td>$0.08 - $0.20</td>
+                </tr>
+                <tr>
+                    <td>Gift Packaging</td>
+                    <td>$0.25 - $0.75</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="additional-info">
+        <h2>Supplier Lead Times</h2>
+        <table id="lead-time-table">
+            <thead>
+                <tr>
+                    <th>Supplier</th>
+                    <th>Standard Order</th>
+                    <th>Rush Order</th>
+                    <th>Rush Fee</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>GlassCraft</td>
+                    <td>7-10 days</td>
+                    <td>3-5 days</td>
+                    <td>+15%</td>
+                </tr>
+                <tr>
+                    <td>JarWorld</td>
+                    <td>10-14 days</td>
+                    <td>5-7 days</td>
+                    <td>+20%</td>
+                </tr>
+                <tr>
+                    <td>GlassPlus</td>
+                    <td>5-7 days</td>
+                    <td>2-3 days</td>
+                    <td>+25%</td>
+                </tr>
+                <tr>
+                    <td>PremiumGlass</td>
+                    <td>12-15 days</td>
+                    <td>7-10 days</td>
+                    <td>+10%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="additional-info">
+        <h2>Cost Comparison Analysis</h2>
+        <p>The Round jar style from GlassPlus offers the lowest base price across all size categories, with an average savings of 18% compared to Mason jars and 32% compared to specialty shapes like Hexagon and Square.</p>
+        <p>For orders exceeding 1000 units, bulk discounts range from 25-30% off base prices, with GlassPlus offering the most competitive bulk rates for standard shapes.</p>
+    </div>
+    
+    <footer>
+        <p>Last updated: March 2025 | Contact purchasing@company.com for more information</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get reference to elements
+            const jarTable = document.getElementById('jar-table');
+            const jarTypeFilter = document.getElementById('jar-type');
+            const jarSizeFilter = document.getElementById('jar-size');
+            const supplierFilter = document.getElementById('supplier');
+            const resetButton = document.getElementById('reset-filters');
+            const bestValueButton = document.getElementById('highlight-best-value');
+            const tableRows = jarTable.querySelectorAll('tbody tr');
+            
+            // Sorting functionality
+            const headers = jarTable.querySelectorAll('th[data-sort]');
+            headers.forEach(header => {
+                header.addEventListener('click', function() {
+                    const sortBy = this.dataset.sort;
+                    const isAsc = this.classList.contains('asc');
+                    
+                    // Reset all headers
+                    headers.forEach(h => {
+                        h.classList.remove('asc', 'desc');
+                    });
+                    
+                    // Set new sort direction
+                    this.classList.add(isAsc ? 'desc' : 'asc');
+                    
+                    // Get all rows and convert to array for sorting
+                    const rows = Array.from(tableRows);
+                    
+                    // Sort rows
+                    rows.sort((a, b) => {
+                        let aVal, bVal;
+                        
+                        if (sortBy === 'jar-type' || sortBy === 'supplier') {
+                            // Sort text
+                            const colIndex = Array.from(headers).findIndex(h => h.dataset.sort === sortBy);
+                            aVal = a.cells[colIndex].textContent;
+                            bVal = b.cells[colIndex].textContent;
+                            return isAsc ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
+                        } else {
+                            // Sort numbers
+                            const colIndex = Array.from(headers).findIndex(h => h.dataset.sort === sortBy);
+                            aVal = parseFloat(a.cells[colIndex].textContent);
+                            bVal = parseFloat(b.cells[colIndex].textContent);
+                            return isAsc ? bVal - aVal : aVal - bVal;
+                        }
+                    });
+                    
+                    // Reorder table body
+                    const tbody = jarTable.querySelector('tbody');
+                    rows.forEach(row => {
+                        tbody.appendChild(row);
+                    });
+                });
+            });
+            
+            // Filtering functionality
+            function applyFilters() {
+                const jarType = jarTypeFilter.value;
+                const jarSize = jarSizeFilter.value;
+                const supplier = supplierFilter.value;
+                
+                tableRows.forEach(row => {
+                    const rowJarType = row.cells[0].textContent;
+                    const rowSize = row.cells[1].textContent + ' oz';
+                    const rowSupplier = row.cells[5].textContent;
+                    
+                    const jarTypeMatch = jarType === 'all' || rowJarType === jarType;
+                    const sizeMatch = jarSize === 'all' || rowSize === jarSize;
+                    const supplierMatch = supplier === 'all' || rowSupplier === supplier;
+                    
+                    if (jarTypeMatch && sizeMatch && supplierMatch) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Event listeners for filters
+            jarTypeFilter.addEventListener('change', applyFilters);
+            jarSizeFilter.addEventListener('change', applyFilters);
+            supplierFilter.addEventListener('change', applyFilters);
+            
+            // Reset all filters
+            resetButton.addEventListener('click', function() {
+                jarTypeFilter.value = 'all';
+                jarSizeFilter.value = 'all';
+                supplierFilter.value = 'all';
+                
+                tableRows.forEach(row => {
+                    row.style.display = '';
+                    row.classList.remove('highlight', 'best-value');
+                });
+            });
+            
+            // Highlight best value
+            bestValueButton.addEventListener('click', function() {
+                // Reset highlights
+                tableRows.forEach(row => {
+                    row.classList.remove('highlight', 'best-value');
+                });
+                
+                // Get visible rows after filtering
+                const visibleRows = Array.from(tableRows).filter(row => row.style.display !== 'none');
+                
+                // Find best value (lowest price) for each size
+                const sizeGroups = {};
+                visibleRows.forEach(row => {
+                    const size = row.cells[1].textContent;
+                    const price = parseFloat(row.cells[2].textContent);
+                    
+                    if (!sizeGroups[size] || price < sizeGroups[size].price) {
+                        sizeGroups[size] = { row, price };
+                    }
+                });
+                
+                // Highlight best values
+                Object.values(sizeGroups).forEach(item => {
+                    item.row.classList.add('best-value');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
